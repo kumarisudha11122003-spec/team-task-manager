@@ -1,30 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { dashboardAPI } from '../utils/api';
-import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutList, Clock, CheckCircle2, AlertCircle, Plus, RefreshCw, MessageSquare, ArrowUpRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { LayoutList, Clock, CheckCircle2, AlertCircle, Plus, RefreshCw, ArrowUpRight } from 'lucide-react';
 import { formatDistanceToNow, isAfter, parseISO } from 'date-fns';
 import { useRole } from '../hooks/useRole';
 
-const MOCK_DATA = {
-  stats: { totalTasks: 47, inProgress: 12, completed: 28, overdueTasks: 7 },
-  team: [
-    { id: 1, name: "Arjun Sharma", role: "admin", task_count: 15, done_count: 11, in_progress_count: 3 },
-    { id: 2, name: "Priya Patel", role: "member", task_count: 12, done_count: 9, in_progress_count: 2 },
-    { id: 3, name: "Rahul Singh", role: "member", task_count: 10, done_count: 6, in_progress_count: 3 },
-    { id: 4, name: "Neha Gupta", role: "member", task_count: 8, done_count: 4, in_progress_count: 2 },
-    { id: 5, name: "Vikram Mehta", role: "member", task_count: 2, done_count: 1, in_progress_count: 1 },
-  ],
-  tasksByStatus: { todo: 7, in_progress: 12, done: 28 },
-  myTasks: [
-    { id: 1, title: "Design system tokens", project_name: "Nexus Core", priority: "high", due_date: new Date(Date.now() - 86400000 * 2).toISOString(), assigned_to_name: "Arjun Sharma" },
-    { id: 2, title: "API rate limiting", project_name: "Backend", priority: "medium", due_date: new Date(Date.now() + 86400000 * 1).toISOString(), assigned_to_name: "Arjun Sharma" }
-  ],
-  recentActivity: [
-    { id: 101, user: "Arjun Sharma", action: "completed", task: "Design system tokens", time: new Date(Date.now() - 120000), type: "completed" },
-    { id: 102, user: "Priya Patel", action: "created", task: "API rate limiting", time: new Date(Date.now() - 900000), type: "created" },
-    { id: 103, user: "Rahul Singh", action: "moved to In Progress", task: "Database migration", time: new Date(Date.now() - 3600000), type: "inProgress" },
-  ]
-};
+
 
 // SVG Donut Component
 const DonutChart = ({ data }) => {
@@ -33,7 +14,7 @@ const DonutChart = ({ data }) => {
   const radius = 80;
   const circumference = 2 * Math.PI * radius;
   
-  const getOffset = (val, prevOffsets) => circumference - ((val / total) * circumference);
+
   
   const p1 = (data.todo / total) * circumference;
   const p2 = (data.in_progress / total) * circumference;

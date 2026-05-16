@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, ArrowRight, Activity, CheckCircle, FolderKanban, Sparkles } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Activity, CheckCircle, FolderKanban, Sparkles } from 'lucide-react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -177,7 +177,7 @@ export default function Login() {
             <div className="space-y-1.5 group">
               <div className="flex items-center justify-between">
                 <label className="text-sm font-medium text-slate-300">Password</label>
-                <a href="#" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Forgot password?</a>
+                <a href="#!" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Forgot password?</a>
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-purple-400 transition-colors">

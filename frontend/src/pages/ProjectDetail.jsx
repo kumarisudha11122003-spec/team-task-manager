@@ -4,7 +4,7 @@ import { projectsAPI, tasksAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, isAfter, parseISO, isValid } from 'date-fns';
-import { Plus, Settings, Users, ArrowLeft, Calendar, Trash2, X, MoreVertical } from 'lucide-react';
+import { Plus, Users, ArrowLeft, Calendar, Trash2, X } from 'lucide-react';
 
 const STATUS_CONFIG = {
   todo: { label: 'TODO', color: '#6B6B8A', bg: 'bg-[var(--bg-surface)]' },

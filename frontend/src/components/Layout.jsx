@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, FolderKanban, ListTodo, Users, Settings, LogOut, Bell, Search, Moon, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, ListTodo, Users, Settings, LogOut, Search, ChevronRight } from 'lucide-react';
 
 export default function Layout() {
   const { user, logout } = useAuth();

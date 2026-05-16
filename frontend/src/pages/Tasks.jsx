@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { tasksAPI } from '../utils/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Search, Filter, Calendar, MoreHorizontal, AlertCircle, X } from 'lucide-react';
+import { Plus, Search, Calendar, MoreHorizontal, X } from 'lucide-react';
 import { isAfter, parseISO, isValid, format } from 'date-fns';
 
 import { useRole } from '../hooks/useRole';
