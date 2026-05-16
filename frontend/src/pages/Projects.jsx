@@ -78,33 +78,35 @@ export default function Projects() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="flex flex-col gap-4">
         {projects.map((p, i) => {
           const progress = p.total_tasks > 0 ? Math.round((p.done_tasks / p.total_tasks) * 100) : 0;
           return (
-            <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-              <Link to={`/projects/${p.id}`} className="block p-6 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-color)] backdrop-blur-xl hover:border-[var(--border-color)] hover:-translate-y-1 hover:shadow-[0_10px_40px_-10px_rgba(124,92,252,0.2)] transition-all group">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1A1A24] to-[#2A2A3C] border border-[var(--border-color)] flex items-center justify-center text-lg shadow-inner text-[#00E5FF]">
+            <motion.div key={p.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+              <Link to={`/projects/${p.id}`} className="block relative p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-color)] backdrop-blur-xl hover:border-[var(--border-color)] hover:-translate-y-0.5 hover:shadow-[0_10px_30px_-10px_rgba(124,92,252,0.15)] transition-all group overflow-hidden">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-5">
+                  <div className="w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br from-[var(--bg-primary)] to-[var(--bg-surface)] border border-[var(--border-color)] flex items-center justify-center text-xl shadow-inner text-[#00E5FF] group-hover:scale-105 transition-transform">
                     ◈
                   </div>
-                  <span className={`text-[10px] tracking-widest px-2 py-1 rounded font-['JetBrains_Mono'] ${p.role === 'admin' ? 'bg-[#7C5CFC]/20 text-[#7C5CFC] border border-[#7C5CFC]/30' : 'bg-[var(--bg-surface)] text-[var(--text-muted)]'}`}>{p.role.toUpperCase()}</span>
-                </div>
-                <h3 className="font-['Syne'] text-xl font-bold mb-2 group-hover:text-[#00E5FF] transition-colors line-clamp-1">{p.name}</h3>
-                <p className="text-[var(--text-muted)] text-sm mb-6 line-clamp-2 h-10">{p.description || 'No description provided.'}</p>
-                
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center text-xs font-['JetBrains_Mono']">
-                    <div className="flex items-center gap-1.5 text-[var(--text-muted)]"><LayoutList className="w-3.5 h-3.5"/> {p.task_count} Tasks</div>
-                    <div className="flex items-center gap-1.5 text-[var(--text-muted)]"><Users className="w-3.5 h-3.5"/> {p.member_count} Members</div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-xs font-['JetBrains_Mono'] mb-1.5">
-                      <span className="text-[var(--text-muted)]">Progress</span>
-                      <span className={progress === 100 ? 'text-[#00FFA3]' : 'text-[#F0F0FF]'}>{progress}%</span>
+                  <div className="flex-1 min-w-0 flex flex-col justify-center">
+                    <div className="flex items-start justify-between gap-4 mb-1">
+                      <h3 className="font-['Syne'] text-lg md:text-xl font-bold group-hover:text-[#00E5FF] transition-colors truncate">{p.name}</h3>
+                      <span className={`shrink-0 text-[10px] tracking-widest px-2 py-1 rounded font-['JetBrains_Mono'] ${p.role === 'admin' ? 'bg-[#7C5CFC]/20 text-[#7C5CFC] border border-[#7C5CFC]/30' : 'bg-[var(--bg-primary)] border border-[var(--border-color)] text-[var(--text-muted)]'}`}>
+                        {p.role.toUpperCase()}
+                      </span>
                     </div>
-                    <div className="h-1.5 w-full bg-[var(--bg-surface)] rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-[#7C5CFC] to-[#00E5FF] rounded-full" style={{ width: `${progress}%` }} />
+                    <p className="text-[var(--text-muted)] text-sm mb-3 truncate">{p.description || 'No description provided.'}</p>
+                    <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+                      <div className="flex items-center gap-5 text-xs font-['JetBrains_Mono'] shrink-0">
+                        <div className="flex items-center gap-1.5 text-[var(--text-muted)]"><LayoutList className="w-3.5 h-3.5"/> {p.task_count} Tasks</div>
+                        <div className="flex items-center gap-1.5 text-[var(--text-muted)]"><Users className="w-3.5 h-3.5"/> {p.member_count} Members</div>
+                      </div>
+                      <div className="flex-1 w-full max-w-sm flex items-center gap-3">
+                        <span className={`text-[10px] font-['JetBrains_Mono'] font-bold w-8 ${progress === 100 ? 'text-[#00FFA3]' : 'text-[var(--text-muted)]'}`}>{progress}%</span>
+                        <div className="h-1.5 flex-1 bg-[var(--bg-primary)] rounded-full overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-[#7C5CFC] to-[#00E5FF] rounded-full transition-all duration-1000" style={{ width: `${progress}%` }} />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
