@@ -28,7 +28,8 @@ const MOCK_DATA = {
 
 // SVG Donut Component
 const DonutChart = ({ data }) => {
-  const total = data.todo + data.in_progress + data.done;
+  const sum = data.todo + data.in_progress + data.done;
+  const total = sum || 1;
   const radius = 80;
   const circumference = 2 * Math.PI * radius;
   
@@ -52,7 +53,7 @@ const DonutChart = ({ data }) => {
           initial={{ strokeDashoffset: circumference }} animate={{ strokeDashoffset: -(p1 + p2) }} transition={{ duration: 1, ease: "easeOut", delay: 0.4 }} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <div className="font-['Syne'] text-3xl font-bold text-[var(--text-primary)]">{total}</div>
+        <div className="font-['Syne'] text-3xl font-bold text-[var(--text-primary)]">{sum}</div>
         <div className="font-['JetBrains_Mono'] text-[11px] text-[var(--text-muted)] tracking-wider uppercase">Tasks</div>
       </div>
     </div>
@@ -318,7 +319,7 @@ export default function Dashboard() {
                        <p className="text-sm text-[var(--text-primary)] font-['DM_Sans'] truncate">
                          {log.user} <span className="text-[var(--text-muted)]">{log.action}</span> <span className="text-[#A78BFF] hover:text-[#00E5FF] transition-colors">{log.task}</span>
                        </p>
-                       <p className="text-[10px] text-[var(--text-muted)] font-['JetBrains_Mono'] mt-1">{formatDistanceToNow(log.time, {addSuffix:true})}</p>
+                       <p className="text-[10px] text-[var(--text-muted)] font-['JetBrains_Mono'] mt-1">{formatDistanceToNow(parseISO(log.time), {addSuffix:true})}</p>
                      </div>
                    </div>
                  )
@@ -328,7 +329,7 @@ export default function Dashboard() {
           </motion.div>
 
           {/* Overdue Tasks Table */}
-          {(!loading && data?.myTasks.some(t => isAfter(new Date(), parseISO(t.due_date)))) && (
+          {(!loading && data?.myTasks.some(t => t.due_date && isAfter(new Date(), parseISO(t.due_date)))) && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.9, ease: "easeOut" }} className="bg-[#FF3D71]/[0.02] border border-[#FF3D71]/20 rounded-[24px] p-8 backdrop-blur-xl">
               <h2 className="font-['Syne'] text-xl font-bold text-[#FF3D71] mb-6 flex items-center gap-2"><AlertCircle className="w-5 h-5" /> Overdue Tasks</h2>
               <div className="overflow-x-auto">
@@ -341,7 +342,7 @@ export default function Dashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {data.myTasks.filter(t => isAfter(new Date(), parseISO(t.due_date))).map(task => (
+                    {data.myTasks.filter(t => t.due_date && isAfter(new Date(), parseISO(t.due_date))).map(task => (
                       <tr key={task.id} className="border-b border-[var(--border-color)] last:border-0 hover:bg-[var(--bg-surface)] transition-colors group">
                         <td className="py-4 pr-4">
                           <div className="text-sm font-medium text-[var(--text-primary)] mb-1 group-hover:text-[#FF3D71] transition-colors">{task.title}</div>
