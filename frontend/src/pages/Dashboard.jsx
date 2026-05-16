@@ -52,8 +52,8 @@ const DonutChart = ({ data }) => {
           initial={{ strokeDashoffset: circumference }} animate={{ strokeDashoffset: -(p1 + p2) }} transition={{ duration: 1, ease: "easeOut", delay: 0.4 }} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <div className="font-['Syne'] text-3xl font-bold text-white">{total}</div>
-        <div className="font-['JetBrains_Mono'] text-[11px] text-[#6B6B8A] tracking-wider uppercase">Tasks</div>
+        <div className="font-['Syne'] text-3xl font-bold text-[var(--text-primary)]">{total}</div>
+        <div className="font-['JetBrains_Mono'] text-[11px] text-[var(--text-muted)] tracking-wider uppercase">Tasks</div>
       </div>
     </div>
   );
@@ -121,8 +121,8 @@ export default function Dashboard() {
           in_progress: stats.inProgress || 0,
           done: stats.completed || 0
         },
-        myTasks: [],
-        recentActivity: MOCK_DATA.recentActivity
+        myTasks: d.myTasks || [],
+        recentActivity: d.recentActivity || []
       });
     } catch (err) {
       setError(err.message);
@@ -137,9 +137,9 @@ export default function Dashboard() {
     <div className="flex-1 flex items-center justify-center h-[calc(100vh-100px)]">
       <div className="text-center bg-[#FF3D71]/10 border border-[#FF3D71]/20 p-8 rounded-2xl max-w-md backdrop-blur-xl">
         <AlertCircle className="w-12 h-12 text-[#FF3D71] mx-auto mb-4" />
-        <h3 className="text-xl font-bold text-white mb-2">Connection Error</h3>
-        <p className="text-[#6B6B8A] mb-6">{error}</p>
-        <button onClick={fetchData} className="px-6 py-2.5 bg-[#FF3D71] text-white font-bold rounded-xl hover:bg-[#e63565] transition-all flex items-center gap-2 mx-auto">
+        <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">Connection Error</h3>
+        <p className="text-[var(--text-muted)] mb-6">{error}</p>
+        <button onClick={fetchData} className="px-6 py-2.5 bg-[#FF3D71] text-[var(--text-primary)] font-bold rounded-xl hover:bg-[#e63565] transition-all flex items-center gap-2 mx-auto">
           <RefreshCw className="w-4 h-4" /> Retry Connection
         </button>
       </div>
@@ -160,7 +160,7 @@ export default function Dashboard() {
       <style>{`
         @keyframes shimmer { 100% { transform: translateX(100%); } }
         .stat-card:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.15); transform: translateY(-6px); }
-        .text-gradient { background: linear-gradient(90deg, #fff 0%, #A78BFF 50%, #00E5FF 100%); -webkit-background-clip: text; color: transparent; }
+        .text-gradient { background: linear-gradient(90deg, var(--text-primary) 0%, #A78BFF 50%, #00E5FF 100%); -webkit-background-clip: text; color: transparent; }
         .blink-cursor { animation: blink 1s step-end infinite; }
         @keyframes blink { 50% { opacity: 0; } }
       `}</style>
@@ -171,11 +171,11 @@ export default function Dashboard() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: "easeOut" }} className="flex justify-between items-end">
           <div>
             <h1 className="font-['Syne'] text-4xl font-[800] text-gradient mb-1">Overview</h1>
-            <p className="font-['DM_Sans'] text-sm text-[#6B6B8A]">Monitor your team's velocity and project health<span className="blink-cursor">_</span></p>
+            <p className="font-['DM_Sans'] text-sm text-[var(--text-muted)]">Monitor your team's velocity and project health<span className="blink-cursor">_</span></p>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-[11px] font-['JetBrains_Mono'] text-[#6B6B8A] bg-white/[0.03] px-3 py-1.5 rounded-full border border-white/5">Last updated: 1 min ago</span>
-            <button className="bg-gradient-to-r from-[#7C5CFC] to-[#00E5FF] px-5 py-2.5 rounded-xl font-['Syne'] font-bold text-[#050508] hover:scale-105 transition-all shadow-[0_0_20px_rgba(124,92,252,0.4)] flex items-center gap-2">
+            <span className="text-[11px] font-['JetBrains_Mono'] text-[var(--text-muted)] bg-[var(--bg-surface)] px-3 py-1.5 rounded-full border border-[var(--border-color)]">Last updated: 1 min ago</span>
+            <button onClick={() => window.location.href = '/tasks'} className="bg-gradient-to-r from-[#7C5CFC] to-[#00E5FF] px-5 py-2.5 rounded-xl font-['Syne'] font-bold text-[var(--bg-primary)] hover:scale-105 transition-all shadow-[0_0_20px_rgba(124,92,252,0.4)] flex items-center gap-2">
               <Plus className="w-4 h-4" /> New Task
             </button>
           </div>
@@ -185,7 +185,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {statCardsConfig.map((card, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: card.delay, ease: "easeOut" }}
-              className={`stat-card relative bg-white/[0.03] border border-white/[0.07] rounded-[20px] p-7 backdrop-blur-[20px] transition-all duration-300 ${card.label === 'OVERDUE' && isDataReady && card.value > 0 ? 'animate-[pulse_3s_infinite]' : ''}`}
+              className={`stat-card relative bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[20px] p-7 backdrop-blur-[20px] transition-all duration-300 ${card.label === 'OVERDUE' && isDataReady && card.value > 0 ? 'animate-[pulse_3s_infinite]' : ''}`}
               style={{ boxShadow: card.label === 'OVERDUE' && isDataReady && card.value > 0 ? '0 0 30px rgba(255,61,113,0.1)' : '' }}
             >
               <div className="absolute top-0 left-0 right-0 h-[2px] rounded-t-[20px]" style={{ background: card.border }} />
@@ -201,9 +201,9 @@ export default function Dashboard() {
               </div>
               <div>
                 {loading ? <Skeleton className="h-12 w-20 rounded-lg mb-1" /> : (
-                  <div className="font-['Syne'] text-5xl font-bold text-white mb-1"><AnimatedCounter value={card.value} /></div>
+                  <div className="font-['Syne'] text-5xl font-bold text-[var(--text-primary)] mb-1"><AnimatedCounter value={card.value} /></div>
                 )}
-                <div className="font-['JetBrains_Mono'] text-[11px] tracking-[0.15em] text-[#6B6B8A]">{card.label}</div>
+                <div className="font-['JetBrains_Mono'] text-[11px] tracking-[0.15em] text-[var(--text-muted)]">{card.label}</div>
               </div>
             </motion.div>
           ))}
@@ -212,15 +212,15 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Team Workload */}
           {isAdmin && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.5, ease: "easeOut" }} className="xl:col-span-2 bg-white/[0.02] border border-white/[0.05] rounded-[24px] p-8 backdrop-blur-xl">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.5, ease: "easeOut" }} className="xl:col-span-2 bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[24px] p-8 backdrop-blur-xl">
               <div className="flex justify-between items-center mb-8">
                 <div className="flex items-center gap-3">
-                  <h2 className="font-['Syne'] text-xl font-bold text-white">Team Workload</h2>
+                  <h2 className="font-['Syne'] text-xl font-bold text-[var(--text-primary)]">Team Workload</h2>
                   <span className="flex items-center gap-1.5 bg-[#00FFA3]/10 border border-[#00FFA3]/20 px-2 py-0.5 rounded-full text-[10px] font-['JetBrains_Mono'] text-[#00FFA3]">
                     <div className="w-1.5 h-1.5 bg-[#00FFA3] rounded-full animate-pulse" /> LIVE
                   </span>
                 </div>
-                <button className="text-[11px] font-['JetBrains_Mono'] text-[#6B6B8A] hover:text-[#00E5FF] transition-colors">View all team →</button>
+                <button className="text-[11px] font-['JetBrains_Mono'] text-[var(--text-muted)] hover:text-[#00E5FF] transition-colors">View all team →</button>
               </div>
 
             <div className="space-y-0">
@@ -235,21 +235,21 @@ export default function Dashboard() {
                  const pIp = (ip / total) * 100;
 
                  return (
-                   <div key={member.id || i} className="flex items-center gap-4 py-4 border-b border-white/[0.04] last:border-0 group">
+                   <div key={member.id || i} className="flex items-center gap-4 py-4 border-b border-[var(--border-color)] last:border-0 group">
                      <div className="relative">
-                       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#7C5CFC] to-[#FF3D71] flex items-center justify-center font-['Syne'] font-bold text-sm shadow-lg text-[#050508]">{initials}</div>
+                       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#7C5CFC] to-[#FF3D71] flex items-center justify-center font-['Syne'] font-bold text-sm shadow-lg text-[var(--bg-primary)]">{initials}</div>
                        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#00FFA3] border-2 border-[#050508] rounded-full" />
                      </div>
                      <div className="flex-1">
                        <div className="flex items-center gap-2 mb-1.5">
-                         <span className="font-['DM_Sans'] text-sm font-medium text-white">{member.name}</span>
+                         <span className="font-['DM_Sans'] text-sm font-medium text-[var(--text-primary)]">{member.name}</span>
                          <span className={`text-[9px] font-bold tracking-wider px-1.5 py-0.5 rounded uppercase font-['JetBrains_Mono'] ${member.role === 'admin' ? 'bg-[#7C5CFC]/20 text-[#7C5CFC]' : 'bg-[#00E5FF]/10 text-[#00E5FF]'}`}>{member.role}</span>
                        </div>
-                       <div className="h-1.5 w-full bg-[#1A1A24] rounded-full overflow-hidden flex">
+                       <div className="h-1.5 w-full bg-[var(--bg-surface)] rounded-full overflow-hidden flex">
                          <motion.div initial={{ width: 0 }} animate={{ width: `${pDone}%` }} transition={{ duration: 0.6, ease: "easeOut" }} className="h-full bg-[#00FFA3]" />
                          <motion.div initial={{ width: 0 }} animate={{ width: `${pIp}%` }} transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }} className="h-full bg-[#00E5FF]" />
                        </div>
-                       <div className="text-[10px] text-[#6B6B8A] font-['JetBrains_Mono'] mt-1.5">{done} of {total} tasks</div>
+                       <div className="text-[10px] text-[var(--text-muted)] font-['JetBrains_Mono'] mt-1.5">{done} of {total} tasks</div>
                      </div>
                      <div className={`font-['Syne'] text-lg font-bold ${percent > 75 ? 'text-[#00FFA3]' : percent > 40 ? 'text-[#FFB800]' : 'text-[#FF3D71]'}`}>{percent}%</div>
                    </div>
@@ -264,31 +264,31 @@ export default function Dashboard() {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.5, ease: "easeOut" }} className="xl:col-span-2 bg-[#7C5CFC]/10 border border-[#7C5CFC]/30 rounded-[24px] p-8 backdrop-blur-xl flex items-center justify-center">
               <div className="text-center">
                 <CheckCircle2 className="w-12 h-12 text-[#7C5CFC] mx-auto mb-4" />
-                <h3 className="font-['Syne'] text-xl font-bold text-white mb-2">Member Workspace</h3>
-                <p className="font-['DM_Sans'] text-[#6B6B8A]">Showing your assigned tasks only.</p>
+                <h3 className="font-['Syne'] text-xl font-bold text-[var(--text-primary)] mb-2">Member Workspace</h3>
+                <p className="font-['DM_Sans'] text-[var(--text-muted)]">Showing your assigned tasks only.</p>
               </div>
             </motion.div>
           )}
 
           {/* Task Distribution Donut */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.6, ease: "easeOut" }} className="bg-white/[0.02] border border-white/[0.05] rounded-[24px] p-8 backdrop-blur-xl flex flex-col items-center">
-            <h2 className="font-['Syne'] text-xl font-bold text-white mb-8 w-full">Task Distribution</h2>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.6, ease: "easeOut" }} className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[24px] p-8 backdrop-blur-xl flex flex-col items-center">
+            <h2 className="font-['Syne'] text-xl font-bold text-[var(--text-primary)] mb-8 w-full">Task Distribution</h2>
             {loading ? <Skeleton className="w-[200px] h-[200px] rounded-full" /> : 
              <DonutChart data={data?.tasksByStatus} />
             }
             {!loading && (
               <div className="w-full mt-8 space-y-3">
-                <div className="flex justify-between items-center text-sm font-['DM_Sans'] group cursor-pointer hover:bg-white/5 p-2 rounded-lg transition-colors">
-                  <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#7C5CFC]" /><span className="text-white">To Do</span></div>
-                  <span className="font-['JetBrains_Mono'] text-[#6B6B8A]">{data.tasksByStatus.todo}</span>
+                <div className="flex justify-between items-center text-sm font-['DM_Sans'] group cursor-pointer hover:bg-[var(--bg-surface)] p-2 rounded-lg transition-colors">
+                  <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#7C5CFC]" /><span className="text-[var(--text-primary)]">To Do</span></div>
+                  <span className="font-['JetBrains_Mono'] text-[var(--text-muted)]">{data.tasksByStatus.todo}</span>
                 </div>
-                <div className="flex justify-between items-center text-sm font-['DM_Sans'] group cursor-pointer hover:bg-white/5 p-2 rounded-lg transition-colors">
-                  <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#00E5FF]" /><span className="text-white">In Progress</span></div>
-                  <span className="font-['JetBrains_Mono'] text-[#6B6B8A]">{data.tasksByStatus.in_progress}</span>
+                <div className="flex justify-between items-center text-sm font-['DM_Sans'] group cursor-pointer hover:bg-[var(--bg-surface)] p-2 rounded-lg transition-colors">
+                  <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#00E5FF]" /><span className="text-[var(--text-primary)]">In Progress</span></div>
+                  <span className="font-['JetBrains_Mono'] text-[var(--text-muted)]">{data.tasksByStatus.in_progress}</span>
                 </div>
-                <div className="flex justify-between items-center text-sm font-['DM_Sans'] group cursor-pointer hover:bg-white/5 p-2 rounded-lg transition-colors">
-                  <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#00FFA3]" /><span className="text-white">Done</span></div>
-                  <span className="font-['JetBrains_Mono'] text-[#6B6B8A]">{data.tasksByStatus.done}</span>
+                <div className="flex justify-between items-center text-sm font-['DM_Sans'] group cursor-pointer hover:bg-[var(--bg-surface)] p-2 rounded-lg transition-colors">
+                  <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#00FFA3]" /><span className="text-[var(--text-primary)]">Done</span></div>
+                  <span className="font-['JetBrains_Mono'] text-[var(--text-muted)]">{data.tasksByStatus.done}</span>
                 </div>
               </div>
             )}
@@ -297,28 +297,28 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Recent Activity */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.7, ease: "easeOut" }} className="bg-white/[0.02] border border-white/[0.05] rounded-[24px] p-8 backdrop-blur-xl">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.7, ease: "easeOut" }} className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[24px] p-8 backdrop-blur-xl">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="font-['Syne'] text-xl font-bold text-white">Recent Activity</h2>
-              <button className="text-[11px] font-['JetBrains_Mono'] text-[#6B6B8A] hover:text-[#7C5CFC] transition-colors">View all →</button>
+              <h2 className="font-['Syne'] text-xl font-bold text-[var(--text-primary)]">Recent Activity</h2>
+              <button className="text-[11px] font-['JetBrains_Mono'] text-[var(--text-muted)] hover:text-[#7C5CFC] transition-colors">View all →</button>
             </div>
             <div className="relative pl-4 space-y-6">
-              <div className="absolute left-[21px] top-4 bottom-4 w-px border-l border-dashed border-white/10 z-0" />
+              <div className="absolute left-[21px] top-4 bottom-4 w-px border-l border-dashed border-[var(--border-color)] z-0" />
               {loading ? [...Array(3)].map((_, i) => <Skeleton key={i} className="h-12 w-full rounded-xl" />) : 
                data?.recentActivity.map((log) => {
                  const initials = log.user.split(' ').map(w=>w[0]).join('');
                  const borderColor = log.type === 'completed' ? '#00FFA3' : log.type === 'created' ? '#7C5CFC' : log.type === 'inProgress' ? '#00E5FF' : '#FF3D71';
                  return (
-                   <div key={log.id} className="relative z-10 flex items-start gap-4 p-3 -ml-3 rounded-xl hover:bg-white/[0.02] transition-colors group cursor-pointer">
-                     <div className="w-9 h-9 rounded-full bg-[#1A1A24] border border-white/10 flex items-center justify-center text-xs font-bold font-['Syne'] text-white shrink-0 shadow-lg relative" style={{ boxShadow: `0 0 10px ${borderColor}20` }}>
+                   <div key={log.id} className="relative z-10 flex items-start gap-4 p-3 -ml-3 rounded-xl hover:bg-[var(--bg-surface)] transition-colors group cursor-pointer">
+                     <div className="w-9 h-9 rounded-full bg-[var(--bg-surface)] border border-[var(--border-color)] flex items-center justify-center text-xs font-bold font-['Syne'] text-[var(--text-primary)] shrink-0 shadow-lg relative" style={{ boxShadow: `0 0 10px ${borderColor}20` }}>
                        {initials}
                        <div className="absolute inset-0 rounded-full border-2 border-transparent border-l-current" style={{ color: borderColor, transform: 'rotate(-45deg)' }} />
                      </div>
                      <div className="flex-1 min-w-0 pt-0.5">
-                       <p className="text-sm text-white font-['DM_Sans'] truncate">
-                         {log.user} <span className="text-[#6B6B8A]">{log.action}</span> <span className="text-[#A78BFF] hover:text-[#00E5FF] transition-colors">{log.task}</span>
+                       <p className="text-sm text-[var(--text-primary)] font-['DM_Sans'] truncate">
+                         {log.user} <span className="text-[var(--text-muted)]">{log.action}</span> <span className="text-[#A78BFF] hover:text-[#00E5FF] transition-colors">{log.task}</span>
                        </p>
-                       <p className="text-[10px] text-[#6B6B8A] font-['JetBrains_Mono'] mt-1">{formatDistanceToNow(log.time, {addSuffix:true})}</p>
+                       <p className="text-[10px] text-[var(--text-muted)] font-['JetBrains_Mono'] mt-1">{formatDistanceToNow(log.time, {addSuffix:true})}</p>
                      </div>
                    </div>
                  )
@@ -334,24 +334,24 @@ export default function Dashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="text-[10px] font-['JetBrains_Mono'] text-[#3D3D5C] tracking-[0.1em] uppercase border-b border-white/[0.04]">
-                      <th className="pb-3 font-semibold cursor-pointer hover:text-white transition-colors">Task Name</th>
+                    <tr className="text-[10px] font-['JetBrains_Mono'] text-[#3D3D5C] tracking-[0.1em] uppercase border-b border-[var(--border-color)]">
+                      <th className="pb-3 font-semibold cursor-pointer hover:text-[var(--text-primary)] transition-colors">Task Name</th>
                       <th className="pb-3 font-semibold">Priority</th>
                       <th className="pb-3 font-semibold text-right">Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {data.myTasks.filter(t => isAfter(new Date(), parseISO(t.due_date))).map(task => (
-                      <tr key={task.id} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors group">
+                      <tr key={task.id} className="border-b border-[var(--border-color)] last:border-0 hover:bg-[var(--bg-surface)] transition-colors group">
                         <td className="py-4 pr-4">
-                          <div className="text-sm font-medium text-white mb-1 group-hover:text-[#FF3D71] transition-colors">{task.title}</div>
+                          <div className="text-sm font-medium text-[var(--text-primary)] mb-1 group-hover:text-[#FF3D71] transition-colors">{task.title}</div>
                           <div className="text-[11px] text-[#FF3D71] font-['JetBrains_Mono'] bg-[#FF3D71]/10 inline-block px-2 rounded">OVERDUE</div>
                         </td>
                         <td className="py-4">
                           <span className={`text-[10px] font-bold tracking-wider px-2 py-0.5 rounded uppercase font-['JetBrains_Mono'] ${task.priority === 'high' ? 'bg-[#FF3D71]/20 text-[#FF3D71] border border-[#FF3D71]/30' : 'bg-[#FFB800]/20 text-[#FFB800] border border-[#FFB800]/30'}`}>{task.priority}</span>
                         </td>
                         <td className="py-4 text-right">
-                          <button className="bg-[#00FFA3]/10 hover:bg-[#00FFA3] text-[#00FFA3] hover:text-[#050508] border border-[#00FFA3]/30 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">Done</button>
+                          <button className="bg-[#00FFA3]/10 hover:bg-[#00FFA3] text-[#00FFA3] hover:text-[var(--bg-primary)] border border-[#00FFA3]/30 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">Done</button>
                         </td>
                       </tr>
                     ))}

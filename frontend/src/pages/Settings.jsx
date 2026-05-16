@@ -142,23 +142,23 @@ export default function Settings() {
   const strengthLabels = ['Weak', 'Fair', 'Strong', 'Very Strong'];
   const strengthColors = ['#FF3D71', '#FFB800', '#7C5CFC', '#00FFA3'];
 
-  if (loading) return <div className="p-10 text-white font-['Syne']">Loading...</div>;
+  if (loading) return <div className="p-10 text-[var(--text-primary)] font-['Syne']">Loading...</div>;
 
   return (
     <div className="mx-auto max-w-[900px] p-10 pb-20">
       <div className="mb-8">
-        <h1 className="font-['Syne'] text-[42px] font-[800] text-transparent bg-clip-text bg-gradient-to-br from-white via-[#A78BFF] to-[#00E5FF] mb-2 leading-none">Settings</h1>
-        <p className="text-[#6B6B8A] font-['DM_Sans'] text-[14px]">Manage your account and preferences</p>
+        <h1 className="font-['Syne'] text-[42px] font-[800] text-transparent bg-clip-text bg-gradient-to-br from-[var(--text-primary)] via-[#A78BFF] to-[#00E5FF] mb-2 leading-none">Settings</h1>
+        <p className="text-[var(--text-muted)] font-['DM_Sans'] text-[14px]">Manage your account and preferences</p>
       </div>
 
-      <div className="bg-white/[0.03] border border-white/[0.07] rounded-[14px] p-[6px] inline-flex gap-1 mb-8">
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[14px] p-[6px] inline-flex gap-1 mb-8">
         {[
           { id: 'profile', icon: User, label: 'Profile' },
           { id: 'security', icon: Shield, label: 'Security' },
           { id: 'notifications', icon: Bell, label: 'Notifications' },
           { id: 'appearance', icon: Palette, label: 'Appearance' }
         ].map(tab => (
-          <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-2 px-5 py-2.5 rounded-[10px] text-[14px] font-['DM_Sans'] transition-all duration-200 ${activeTab === tab.id ? 'bg-gradient-to-br from-[#7C5CFC]/30 to-[#00E5FF]/15 border border-[#7C5CFC]/40 text-white shadow-[0_0_20px_rgba(124,92,252,0.2)]' : 'text-[#6B6B8A] hover:bg-white/5 hover:text-white'}`}>
+          <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-2 px-5 py-2.5 rounded-[10px] text-[14px] font-['DM_Sans'] transition-all duration-200 ${activeTab === tab.id ? 'bg-gradient-to-br from-[#7C5CFC]/30 to-[#00E5FF]/15 border border-[#7C5CFC]/40 text-[var(--text-primary)] shadow-[0_0_20px_rgba(124,92,252,0.2)]' : 'text-[var(--text-muted)] hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]'}`}>
             <tab.icon className="w-4 h-4" /> {tab.label}
           </button>
         ))}
@@ -169,37 +169,37 @@ export default function Settings() {
           {activeTab === 'profile' && (
             <div className="space-y-6">
               {fetchError && <div className="text-[#FF3D71] text-sm bg-[#FF3D71]/10 p-4 rounded-xl">{fetchError}</div>}
-              <div className="bg-white/[0.03] border border-white/[0.07] rounded-[20px] p-8 flex items-center gap-7">
-                <div className="w-[88px] h-[88px] rounded-full bg-gradient-to-br from-[#7C5CFC] to-[#00E5FF] border-[3px] border-[#7C5CFC]/50 shadow-[0_0_30px_rgba(124,92,252,0.3)] flex items-center justify-center font-['Syne'] font-bold text-[28px] text-white">
+              <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[20px] p-8 flex items-center gap-7">
+                <div className="w-[88px] h-[88px] rounded-full bg-gradient-to-br from-[#7C5CFC] to-[#00E5FF] border-[3px] border-[#7C5CFC]/50 shadow-[0_0_30px_rgba(124,92,252,0.3)] flex items-center justify-center font-['Syne'] font-bold text-[28px] text-[var(--text-primary)]">
                   {getInitials(name)}
                 </div>
                 <div>
-                  <h3 className="font-['Syne'] text-[22px] font-bold text-white mb-1">{name}</h3>
-                  <p className="font-['DM_Sans'] text-[14px] text-[#6B6B8A] mb-3">{email}</p>
+                  <h3 className="font-['Syne'] text-[22px] font-bold text-[var(--text-primary)] mb-1">{name}</h3>
+                  <p className="font-['DM_Sans'] text-[14px] text-[var(--text-muted)] mb-3">{email}</p>
                   <div className="flex items-center gap-3">
                     <span className={`font-['JetBrains_Mono'] text-[11px] tracking-[0.1em] px-2.5 py-1 rounded-full uppercase ${role === 'admin' ? 'bg-[#7C5CFC]/20 text-[#A78BFF] border border-[#7C5CFC]/40' : 'bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30'}`}>{role}</span>
-                    <span className="text-[#6B6B8A] text-[12px]">Member since {memberSince ? new Date(memberSince).toLocaleDateString('en', {month:'short', year:'numeric'}) : 'recently'}</span>
+                    <span className="text-[var(--text-muted)] text-[12px]">Member since {memberSince ? new Date(memberSince).toLocaleDateString('en', {month:'short', year:'numeric'}) : 'recently'}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white/[0.03] border border-white/[0.07] rounded-[20px] p-8 flex flex-col gap-6">
+              <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[20px] p-8 flex flex-col gap-6">
                 <div className="grid grid-cols-2 gap-5">
                   <div>
-                    <label className="block font-['JetBrains_Mono'] text-[11px] tracking-[0.15em] text-[#6B6B8A] uppercase mb-2">Full Name</label>
-                    <input type="text" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-white/[0.04] border border-white/10 rounded-[12px] px-4 py-3.5 font-['DM_Sans'] text-[14px] text-white outline-none focus:border-[#7C5CFC]/60 focus:shadow-[0_0_0_3px_rgba(124,92,252,0.12)] transition-all"/>
+                    <label className="block font-['JetBrains_Mono'] text-[11px] tracking-[0.15em] text-[var(--text-muted)] uppercase mb-2">Full Name</label>
+                    <input type="text" value={name} onChange={e=>setName(e.target.value)} className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[12px] px-4 py-3.5 font-['DM_Sans'] text-[14px] text-[var(--text-primary)] outline-none focus:border-[#7C5CFC]/60 focus:shadow-[0_0_0_3px_rgba(124,92,252,0.12)] transition-all"/>
                   </div>
                   <div>
-                    <label className="block font-['JetBrains_Mono'] text-[11px] tracking-[0.15em] text-[#6B6B8A] uppercase mb-2">Email Address</label>
-                    <input type="email" value={email} onChange={e=>setEmail(e.target.value)} className="w-full bg-white/[0.04] border border-white/10 rounded-[12px] px-4 py-3.5 font-['DM_Sans'] text-[14px] text-white outline-none focus:border-[#7C5CFC]/60 focus:shadow-[0_0_0_3px_rgba(124,92,252,0.12)] transition-all"/>
+                    <label className="block font-['JetBrains_Mono'] text-[11px] tracking-[0.15em] text-[var(--text-muted)] uppercase mb-2">Email Address</label>
+                    <input type="email" value={email} onChange={e=>setEmail(e.target.value)} className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[12px] px-4 py-3.5 font-['DM_Sans'] text-[14px] text-[var(--text-primary)] outline-none focus:border-[#7C5CFC]/60 focus:shadow-[0_0_0_3px_rgba(124,92,252,0.12)] transition-all"/>
                   </div>
                   <div>
-                    <label className="block font-['JetBrains_Mono'] text-[11px] tracking-[0.15em] text-[#6B6B8A] uppercase mb-2">Role</label>
-                    <div className="w-full bg-white/[0.02] border border-white/10 rounded-[12px] px-4 py-3.5 font-['DM_Sans'] text-[14px] text-[#6B6B8A] cursor-default flex justify-between uppercase">{role}</div>
+                    <label className="block font-['JetBrains_Mono'] text-[11px] tracking-[0.15em] text-[var(--text-muted)] uppercase mb-2">Role</label>
+                    <div className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[12px] px-4 py-3.5 font-['DM_Sans'] text-[14px] text-[var(--text-muted)] cursor-default flex justify-between uppercase">{role}</div>
                   </div>
                 </div>
                 {saveError && <div className="text-[#FF3D71] text-sm">{saveError}</div>}
-                <button onClick={handleSave} disabled={saving || (name===originalData.name && email===originalData.email)} className="ml-auto bg-gradient-to-br from-[#7C5CFC] to-[#00E5FF] px-8 py-3.5 rounded-[12px] font-['Syne'] text-[15px] font-bold text-white hover:scale-[1.03] hover:brightness-110 disabled:opacity-50 disabled:hover:scale-100 transition-all">
+                <button onClick={handleSave} disabled={saving || (name===originalData.name && email===originalData.email)} className="ml-auto bg-gradient-to-br from-[#7C5CFC] to-[#00E5FF] px-8 py-3.5 rounded-[12px] font-['Syne'] text-[15px] font-bold text-[var(--text-primary)] hover:scale-[1.03] hover:brightness-110 disabled:opacity-50 disabled:hover:scale-100 transition-all">
                   {saving ? 'Saving...' : 'Save Changes'}
                 </button>
               </div>
@@ -207,29 +207,29 @@ export default function Settings() {
               <div className="border border-[#FF3D71]/30 bg-[#FF3D71]/[0.04] rounded-[16px] p-6 flex justify-between items-center">
                 <div>
                   <h3 className="text-[#FF3D71] font-bold text-[16px] mb-1">Delete Account</h3>
-                  <p className="text-[#6B6B8A] text-[13px]">Permanently remove your account and all of its contents. This cannot be undone.</p>
+                  <p className="text-[var(--text-muted)] text-[13px]">Permanently remove your account and all of its contents. This cannot be undone.</p>
                 </div>
-                <button className="px-5 py-2.5 border border-[#FF3D71] text-[#FF3D71] rounded-lg font-bold text-[14px] hover:bg-[#FF3D71] hover:text-white transition-colors">Delete Account</button>
+                <button className="px-5 py-2.5 border border-[#FF3D71] text-[#FF3D71] rounded-lg font-bold text-[14px] hover:bg-[#FF3D71] hover:text-[var(--text-primary)] transition-colors">Delete Account</button>
               </div>
             </div>
           )}
 
           {activeTab === 'security' && (
-            <div className="bg-white/[0.03] border border-white/[0.07] rounded-[20px] p-8 max-w-lg">
-              <h3 className="font-['Syne'] text-[18px] font-bold text-white mb-6">Change Password</h3>
+            <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[20px] p-8 max-w-lg">
+              <h3 className="font-['Syne'] text-[18px] font-bold text-[var(--text-primary)] mb-6">Change Password</h3>
               <div className="space-y-5 mb-8">
                 <div>
-                  <label className="block font-['JetBrains_Mono'] text-[11px] tracking-[0.15em] text-[#6B6B8A] uppercase mb-2">Current Password</label>
+                  <label className="block font-['JetBrains_Mono'] text-[11px] tracking-[0.15em] text-[var(--text-muted)] uppercase mb-2">Current Password</label>
                   <div className="relative">
-                    <input type={showCurrent ? 'text' : 'password'} value={currentPassword} onChange={e=>setCurrentPassword(e.target.value)} className="w-full bg-white/[0.04] border border-white/10 rounded-[12px] px-4 py-3.5 font-['DM_Sans'] text-[14px] text-white outline-none focus:border-[#7C5CFC]/60 transition-all"/>
-                    <button onClick={()=>setShowCurrent(!showCurrent)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6B6B8A] hover:text-white">{showCurrent ? <EyeOff className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}</button>
+                    <input type={showCurrent ? 'text' : 'password'} value={currentPassword} onChange={e=>setCurrentPassword(e.target.value)} className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[12px] px-4 py-3.5 font-['DM_Sans'] text-[14px] text-[var(--text-primary)] outline-none focus:border-[#7C5CFC]/60 transition-all"/>
+                    <button onClick={()=>setShowCurrent(!showCurrent)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)]">{showCurrent ? <EyeOff className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}</button>
                   </div>
                 </div>
                 <div>
-                  <label className="block font-['JetBrains_Mono'] text-[11px] tracking-[0.15em] text-[#6B6B8A] uppercase mb-2">New Password</label>
+                  <label className="block font-['JetBrains_Mono'] text-[11px] tracking-[0.15em] text-[var(--text-muted)] uppercase mb-2">New Password</label>
                   <div className="relative">
-                    <input type={showNew ? 'text' : 'password'} value={newPassword} onChange={e=>setNewPassword(e.target.value)} className="w-full bg-white/[0.04] border border-white/10 rounded-[12px] px-4 py-3.5 font-['DM_Sans'] text-[14px] text-white outline-none focus:border-[#7C5CFC]/60 transition-all"/>
-                    <button onClick={()=>setShowNew(!showNew)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6B6B8A] hover:text-white">{showNew ? <EyeOff className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}</button>
+                    <input type={showNew ? 'text' : 'password'} value={newPassword} onChange={e=>setNewPassword(e.target.value)} className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[12px] px-4 py-3.5 font-['DM_Sans'] text-[14px] text-[var(--text-primary)] outline-none focus:border-[#7C5CFC]/60 transition-all"/>
+                    <button onClick={()=>setShowNew(!showNew)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)]">{showNew ? <EyeOff className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}</button>
                   </div>
                   {newPassword && (
                     <div className="mt-3">
@@ -245,20 +245,20 @@ export default function Settings() {
                   )}
                 </div>
                 <div>
-                  <label className="block font-['JetBrains_Mono'] text-[11px] tracking-[0.15em] text-[#6B6B8A] uppercase mb-2">Confirm Password</label>
+                  <label className="block font-['JetBrains_Mono'] text-[11px] tracking-[0.15em] text-[var(--text-muted)] uppercase mb-2">Confirm Password</label>
                   <div className="relative">
-                    <input type={showConfirm ? 'text' : 'password'} value={confirmPassword} onChange={e=>setConfirmPassword(e.target.value)} className="w-full bg-white/[0.04] border border-white/10 rounded-[12px] px-4 py-3.5 font-['DM_Sans'] text-[14px] text-white outline-none focus:border-[#7C5CFC]/60 transition-all"/>
-                    <button onClick={()=>setShowConfirm(!showConfirm)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6B6B8A] hover:text-white">{showConfirm ? <EyeOff className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}</button>
+                    <input type={showConfirm ? 'text' : 'password'} value={confirmPassword} onChange={e=>setConfirmPassword(e.target.value)} className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[12px] px-4 py-3.5 font-['DM_Sans'] text-[14px] text-[var(--text-primary)] outline-none focus:border-[#7C5CFC]/60 transition-all"/>
+                    <button onClick={()=>setShowConfirm(!showConfirm)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)]">{showConfirm ? <EyeOff className="w-4 h-4"/> : <Eye className="w-4 h-4"/>}</button>
                   </div>
                 </div>
               </div>
               {passwordError && <div className="text-[#FF3D71] text-[13px] mb-4">{passwordError}</div>}
-              <button onClick={handlePasswordChange} className="w-full bg-gradient-to-br from-[#7C5CFC] to-[#00E5FF] py-3.5 rounded-[12px] font-['Syne'] text-[15px] font-bold text-white hover:scale-[1.02] hover:brightness-110 transition-all">Update Password</button>
+              <button onClick={handlePasswordChange} className="w-full bg-gradient-to-br from-[#7C5CFC] to-[#00E5FF] py-3.5 rounded-[12px] font-['Syne'] text-[15px] font-bold text-[var(--text-primary)] hover:scale-[1.02] hover:brightness-110 transition-all">Update Password</button>
             </div>
           )}
 
           {activeTab === 'notifications' && (
-            <div className="bg-white/[0.03] border border-white/[0.07] rounded-[20px] p-6 space-y-4">
+            <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[20px] p-6 space-y-4">
               {[
                 { id: 'assigned', icon: User, title: 'Task Assigned to Me', desc: 'Get notified when a task is assigned to you' },
                 { id: 'status', icon: Bell, title: 'Status Changes', desc: 'When tasks you own change status' },
@@ -266,12 +266,12 @@ export default function Settings() {
                 { id: 'newMember', icon: Shield, title: 'New Team Member', desc: 'When someone joins your workspace' },
                 { id: 'project', icon: Palette, title: 'Project Updates', desc: 'Activity in projects you\'re a member of' }
               ].map(item => (
-                <div key={item.id} className="flex justify-between items-center py-4 border-b border-white/[0.04] last:border-0">
+                <div key={item.id} className="flex justify-between items-center py-4 border-b border-[var(--border-color)] last:border-0">
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-[#7C5CFC]/20 flex items-center justify-center text-[#7C5CFC]"><item.icon className="w-4 h-4"/></div>
                     <div>
-                      <h4 className="font-['DM_Sans'] text-[14px] text-white font-medium">{item.title}</h4>
-                      <p className="font-['DM_Sans'] text-[12px] text-[#6B6B8A]">{item.desc}</p>
+                      <h4 className="font-['DM_Sans'] text-[14px] text-[var(--text-primary)] font-medium">{item.title}</h4>
+                      <p className="font-['DM_Sans'] text-[12px] text-[var(--text-muted)]">{item.desc}</p>
                     </div>
                   </div>
                   <button onClick={() => setNotifications({...notifications, [item.id]: !notifications[item.id]})} className={`relative w-[44px] h-[24px] rounded-full transition-all duration-250 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${notifications[item.id] ? 'bg-gradient-to-r from-[#7C5CFC] to-[#00E5FF]' : 'bg-[#2a2a3d]'}`}>
@@ -280,37 +280,37 @@ export default function Settings() {
                 </div>
               ))}
               <div className="pt-4">
-                <button className="bg-gradient-to-br from-[#7C5CFC] to-[#00E5FF] px-8 py-3 rounded-[12px] font-['Syne'] text-[15px] font-bold text-white hover:scale-[1.03] transition-all">Save Preferences</button>
+                <button className="bg-gradient-to-br from-[#7C5CFC] to-[#00E5FF] px-8 py-3 rounded-[12px] font-['Syne'] text-[15px] font-bold text-[var(--text-primary)] hover:scale-[1.03] transition-all">Save Preferences</button>
               </div>
             </div>
           )}
 
           {activeTab === 'appearance' && (
             <div className="space-y-6">
-              <div className="bg-white/[0.03] border border-white/[0.07] rounded-[20px] p-8">
-                <h3 className="font-['Syne'] text-[18px] font-bold text-white mb-6">Theme</h3>
+              <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[20px] p-8">
+                <h3 className="font-['Syne'] text-[18px] font-bold text-[var(--text-primary)] mb-6">Theme</h3>
                 <div className="flex gap-4">
-                  <button className="w-[180px] p-4 border-2 border-[#7C5CFC] bg-[#050508] rounded-[16px] relative shadow-[0_0_20px_rgba(124,92,252,0.2)]">
+                  <button className="w-[180px] p-4 border-2 border-[#7C5CFC] bg-[var(--bg-primary)] rounded-[16px] relative shadow-[0_0_20px_rgba(124,92,252,0.2)]">
                     <div className="absolute top-3 right-3 w-4 h-4 bg-[#7C5CFC] rounded-full flex items-center justify-center"><div className="w-1.5 h-1.5 bg-white rounded-full"/></div>
-                    <div className="h-20 bg-white/5 rounded-lg mb-3 flex flex-col gap-2 p-2">
-                      <div className="w-full h-3 bg-white/10 rounded-full" />
-                      <div className="w-2/3 h-3 bg-white/10 rounded-full" />
+                    <div className="h-20 bg-[var(--bg-surface)] rounded-lg mb-3 flex flex-col gap-2 p-2">
+                      <div className="w-full h-3 bg-[var(--bg-surface)] rounded-full" />
+                      <div className="w-2/3 h-3 bg-[var(--bg-surface)] rounded-full" />
                     </div>
-                    <div className="text-white font-['DM_Sans'] text-[14px] font-bold">Dark Theme</div>
+                    <div className="text-[var(--text-primary)] font-['DM_Sans'] text-[14px] font-bold">Dark Theme</div>
                   </button>
-                  <button className="w-[180px] p-4 border-2 border-white/10 bg-[#e0e0e0] rounded-[16px] opacity-40 cursor-not-allowed">
+                  <button className="w-[180px] p-4 border-2 border-[var(--border-color)] bg-[#e0e0e0] rounded-[16px] opacity-40 cursor-not-allowed">
                     <div className="h-20 bg-black/10 rounded-lg mb-3" />
                     <div className="text-black font-['DM_Sans'] text-[14px] font-bold">Light Theme</div>
                   </button>
-                  <button className="w-[180px] p-4 border-2 border-white/10 bg-gradient-to-br from-[#050508] to-white rounded-[16px] opacity-40 cursor-not-allowed">
-                    <div className="h-20 bg-white/20 rounded-lg mb-3" />
-                    <div className="text-white font-['DM_Sans'] text-[14px] font-bold drop-shadow-md">System</div>
+                  <button className="w-[180px] p-4 border-2 border-[var(--border-color)] bg-gradient-to-br from-[#050508] to-white rounded-[16px] opacity-40 cursor-not-allowed">
+                    <div className="h-20 bg-[var(--bg-surface)] rounded-lg mb-3" />
+                    <div className="text-[var(--text-primary)] font-['DM_Sans'] text-[14px] font-bold drop-shadow-md">System</div>
                   </button>
                 </div>
               </div>
 
-              <div className="bg-white/[0.03] border border-white/[0.07] rounded-[20px] p-8">
-                <h3 className="font-['Syne'] text-[18px] font-bold text-white mb-6">Accent Color</h3>
+              <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[20px] p-8">
+                <h3 className="font-['Syne'] text-[18px] font-bold text-[var(--text-primary)] mb-6">Accent Color</h3>
                 <div className="flex gap-4">
                   {['#7C5CFC', '#00E5FF', '#00FFA3', '#FFB800', '#FF3D71', '#818CF8'].map(color => (
                     <button key={color} className="w-8 h-8 rounded-full" style={{ background: color, border: color === '#7C5CFC' ? '3px solid white' : 'none', boxShadow: color === '#7C5CFC' ? `0 0 15px ${color}` : 'none' }} />

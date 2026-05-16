@@ -45,12 +45,12 @@ export default function Layout() {
   useEffect(() => {
     const root = document.documentElement;
     if (isDark) {
-      root.style.setProperty('--bg-primary', '#050508');
+      root.style.setProperty('--bg-primary', 'var(--bg-primary)');
       root.style.setProperty('--bg-surface', 'rgba(255,255,255,0.03)');
       root.style.setProperty('--text-primary', '#F0F0FF');
       root.style.setProperty('--text-muted', '#6B6B8A');
       root.style.setProperty('--border-color', 'rgba(255,255,255,0.07)');
-      document.body.style.background = '#050508';
+      document.body.style.background = 'var(--bg-primary)';
       localStorage.setItem('theme', 'dark');
     } else {
       root.style.setProperty('--bg-primary', '#F5F5FF');
@@ -223,10 +223,10 @@ export default function Layout() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-[#00E5FF] opacity-[0.12] blur-[80px] z-0 pointer-events-none" style={{ animation: 'drift 15s alternate-reverse infinite ease-in-out' }} />
 
         {/* Sidebar */}
-        <aside className="relative z-10 hidden md:flex flex-col w-[240px] bg-white/[0.02] border-r border-white/[0.06] shadow-[inset_-5px_0_15px_rgba(255,255,255,0.01)] shrink-0 transition-all duration-300">
+        <aside className="relative z-10 hidden md:flex flex-col w-[240px] bg-[var(--bg-surface)] border-r border-[var(--border-color)] shadow-[inset_-5px_0_15px_rgba(255,255,255,0.01)] shrink-0 transition-all duration-300">
           <div className="p-6 flex items-center gap-3 h-[56px] shrink-0 border-b border-transparent">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#7C5CFC] to-[#00E5FF] flex items-center justify-center shrink-0" style={{ animation: 'rotateSquare 8s linear infinite' }}>
-              <div className="w-4 h-4 bg-[#050508] rounded-sm" style={{ animation: 'rotateSquare 4s linear infinite reverse' }} />
+              <div className="w-4 h-4 bg-[var(--bg-primary)] rounded-sm" style={{ animation: 'rotateSquare 4s linear infinite reverse' }} />
             </div>
             <span className="font-['Syne'] font-bold text-xl tracking-wide whitespace-nowrap overflow-hidden">TaskFlow</span>
           </div>
@@ -237,8 +237,8 @@ export default function Layout() {
               const isActive = location.pathname.startsWith(item.path);
               return (
                 <NavLink key={item.name} to={item.path} className="block relative group">
-                  <div className={`relative flex items-center gap-3 px-4 py-2.5 rounded-[10px] transition-all duration-200 ${isActive ? 'bg-gradient-to-br from-[#7C5CFC]/25 to-[#00E5FF]/10 text-white border-l-[3px] border-[#7C5CFC] shadow-[inset_0_0_20px_rgba(124,92,252,0.1)]' : 'text-[#6B6B8A] hover:bg-[#7C5CFC]/[0.08] hover:text-[#A78BFF]'}`}>
-                    <item.icon className={`w-5 h-5 shrink-0 transition-colors ${isActive ? 'text-white' : 'group-hover:text-[#A78BFF]'}`} />
+                  <div className={`relative flex items-center gap-3 px-4 py-2.5 rounded-[10px] transition-all duration-200 ${isActive ? 'bg-gradient-to-br from-[#7C5CFC]/25 to-[#00E5FF]/10 text-[var(--text-primary)] border-l-[3px] border-[#7C5CFC] shadow-[inset_0_0_20px_rgba(124,92,252,0.1)]' : 'text-[var(--text-muted)] hover:bg-[#7C5CFC]/[0.08] hover:text-[#A78BFF]'}`}>
+                    <item.icon className={`w-5 h-5 shrink-0 transition-colors ${isActive ? 'text-[var(--text-primary)]' : 'group-hover:text-[#A78BFF]'}`} />
                     <span className="font-medium text-sm whitespace-nowrap">{item.name}</span>
                   </div>
                 </NavLink>
@@ -246,15 +246,15 @@ export default function Layout() {
             })}
           </nav>
 
-          <div className="p-4 border-t border-white/[0.06] group cursor-pointer hover:bg-[#FF3D71]/5 transition-colors">
+          <div className="p-4 border-t border-[var(--border-color)] group cursor-pointer hover:bg-[#FF3D71]/5 transition-colors">
             <div className="flex items-center gap-3 p-2 rounded-xl mb-1">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#7C5CFC] to-[#00E5FF] flex items-center justify-center text-sm font-bold shrink-0 shadow-lg relative font-['Syne'] text-[#050508]">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#7C5CFC] to-[#00E5FF] flex items-center justify-center text-sm font-bold shrink-0 shadow-lg relative font-['Syne'] text-[var(--bg-primary)]">
                 {initials}
                 <div className="absolute bottom-0 right-0 w-3 h-3 bg-[#00FFA3] border-2 border-[#050508] rounded-full animate-pulse" />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-sm font-medium truncate text-white">{user?.name}</div>
-                <div className="text-[11px] text-[#6B6B8A] truncate leading-tight">{user?.email}</div>
+                <div className="text-sm font-medium truncate text-[var(--text-primary)]">{user?.name}</div>
+                <div className="text-[11px] text-[var(--text-muted)] truncate leading-tight">{user?.email}</div>
               </div>
             </div>
             <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2 text-[#FF3D71] group-hover:bg-[#FF3D71]/10 rounded-lg transition-all group-hover:translate-x-1">
@@ -267,17 +267,17 @@ export default function Layout() {
         {/* Main Content */}
         <div className="flex-1 flex flex-col min-w-0 relative z-10 h-screen overflow-hidden">
           {/* Top Navbar */}
-          <header className="navbar-top h-[56px] shrink-0 border-b border-white/[0.05] bg-[var(--bg-primary,#050508)]/80 backdrop-blur-[20px] flex items-center justify-between px-6 z-50">
+          <header className="navbar-top h-[56px] shrink-0 border-b border-[var(--border-color)] bg-[var(--bg-primary,#050508)]/80 backdrop-blur-[20px] flex items-center justify-between px-6 z-50">
             <div className="flex items-center gap-2 text-sm">
-              <span className="font-['Syne'] font-medium text-white">{getBreadcrumb()}</span>
-              <ChevronRight className="w-4 h-4 text-[#6B6B8A]" />
-              <span className="text-[#6B6B8A] text-xs">Overview</span>
+              <span className="font-['Syne'] font-medium text-[var(--text-primary)]">{getBreadcrumb()}</span>
+              <ChevronRight className="w-4 h-4 text-[var(--text-muted)]" />
+              <span className="text-[var(--text-muted)] text-xs">Overview</span>
             </div>
             
             <div className="relative w-[320px] hidden lg:block group">
-              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-[#6B6B8A] group-focus-within:text-[#7C5CFC] transition-colors" />
-              <input type="text" placeholder="Search" className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl py-2 pl-11 pr-12 text-sm outline-none focus:border-[#7C5CFC]/60 focus:ring-[3px] focus:ring-[#7C5CFC]/10 transition-all placeholder-[#6B6B8A] text-[#F0F0FF]" />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded border border-white/10 text-[10px] text-[#6B6B8A] font-['JetBrains_Mono'] bg-[#1A1A24]">⌘K</div>
+              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-focus-within:text-[#7C5CFC] transition-colors" />
+              <input type="text" placeholder="Search" className="w-full bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl py-2 pl-11 pr-12 text-sm outline-none focus:border-[#7C5CFC]/60 focus:ring-[3px] focus:ring-[#7C5CFC]/10 transition-all placeholder-[#6B6B8A] text-[#F0F0FF]" />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded border border-[var(--border-color)] text-[10px] text-[var(--text-muted)] font-['JetBrains_Mono'] bg-[var(--bg-surface)]">⌘K</div>
             </div>
 
             <div className="flex items-center gap-4">
@@ -314,7 +314,7 @@ export default function Layout() {
                       position: 'absolute',
                       top: '4px', right: '4px',
                       background: '#FF3D71',
-                      color: '#fff',
+                      color: 'var(--text-primary)',
                       fontSize: '10px',
                       fontFamily: 'JetBrains Mono, monospace',
                       fontWeight: 700,
@@ -440,7 +440,7 @@ export default function Layout() {
                 </span>
               </button>
 
-              <div className="w-px h-5 bg-white/[0.08]" />
+              <div className="w-px h-5 bg-[var(--bg-surface)]" />
 
               {/* User Avatar Menu */}
               <div className="avatar-wrapper" ref={avatarRef} style={{ position: 'relative' }}>
@@ -462,7 +462,7 @@ export default function Layout() {
                     fontFamily: 'Syne, sans-serif',
                     fontSize: '13px',
                     fontWeight: 700,
-                    color: '#fff',
+                    color: 'var(--text-primary)',
                     transition: 'all 200ms',
                     boxShadow: showUserMenu ? '0 0 0 3px rgba(124,92,252,0.2)' : 'none',
                     outline: 'none'
@@ -492,7 +492,7 @@ export default function Layout() {
                       right: 0,
                       width: '260px',
                       zIndex: 999,
-                      background: '#0D0D1A',
+                      background: 'var(--bg-primary)',
                       backdropFilter: 'blur(40px) saturate(200%)',
                       WebkitBackdropFilter: 'blur(40px) saturate(200%)',
                       border: '1px solid rgba(255, 255, 255, 0.12)',
@@ -521,7 +521,7 @@ export default function Layout() {
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           fontFamily: 'Syne, sans-serif',
                           fontSize: '16px', fontWeight: 700,
-                          color: '#fff', flexShrink: 0,
+                          color: 'var(--text-primary)', flexShrink: 0,
                           boxShadow: '0 4px 12px rgba(0,0,0,0.4)'
                         }}>
                           {initials}
@@ -530,7 +530,7 @@ export default function Layout() {
                         <div style={{ overflow: 'hidden', flex: 1 }}>
                           <p style={{
                             margin: '0 0 2px',
-                            color: '#FFFFFF',
+                            color: 'var(--text-primary)',
                             fontFamily: 'Syne, sans-serif',
                             fontSize: '15px', fontWeight: 700,
                             whiteSpace: 'nowrap',
@@ -556,7 +556,7 @@ export default function Layout() {
                       <div style={{
                         padding: '12px 18px',
                         borderBottom: '1px solid rgba(255,255,255,0.06)',
-                        background: '#0D0D1A'
+                        background: 'var(--bg-primary)'
                       }}>
                         <span style={{
                           display: 'inline-flex',
@@ -585,7 +585,7 @@ export default function Layout() {
                         </span>
                       </div>
 
-                      <div style={{ padding: '8px 0', background: '#0D0D1A' }}>
+                      <div style={{ padding: '8px 0', background: 'var(--bg-primary)' }}>
                         {[
                           { 
                             label: 'My Profile', 
@@ -644,7 +644,7 @@ export default function Layout() {
                             }}
                             onMouseEnter={e => {
                               e.currentTarget.style.background = 'rgba(124,92,252,0.12)'
-                              e.currentTarget.style.color = '#FFFFFF'
+                              e.currentTarget.style.color = 'var(--text-primary)'
                               e.currentTarget.style.paddingLeft = '22px'
                             }}
                             onMouseLeave={e => {
@@ -671,7 +671,7 @@ export default function Layout() {
                         margin: '0'
                       }} />
 
-                      <div style={{ padding: '8px 0', background: '#0D0D1A' }}>
+                      <div style={{ padding: '8px 0', background: 'var(--bg-primary)' }}>
                         <button
                           type="button"
                           onClick={handleLogout}
@@ -723,11 +723,11 @@ export default function Layout() {
           </main>
           
           {/* Mobile Bottom Nav */}
-          <nav className="md:hidden flex justify-around p-3 border-t border-white/10 bg-[#050508]/90 backdrop-blur-xl shrink-0 z-50 relative">
+          <nav className="md:hidden flex justify-around p-3 border-t border-[var(--border-color)] bg-[var(--bg-primary)]/90 backdrop-blur-xl shrink-0 z-50 relative">
             {navItems.slice(0,5).map(item => {
               const isActive = location.pathname.startsWith(item.path);
               return (
-                <NavLink key={item.name} to={item.path} className={`p-2 rounded-xl ${isActive ? 'bg-[#7C5CFC]/20 text-[#00E5FF]' : 'text-[#6B6B8A]'}`}>
+                <NavLink key={item.name} to={item.path} className={`p-2 rounded-xl ${isActive ? 'bg-[#7C5CFC]/20 text-[#00E5FF]' : 'text-[var(--text-muted)]'}`}>
                   <item.icon className="w-6 h-6" />
                 </NavLink>
               );
