@@ -70,6 +70,8 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [lastFetched, setLastFetched] = useState(null);
+  const [timeAgo, setTimeAgo] = useState('just now');
   
   // Dynamically check if the page has light-theme or dark-theme active
   const [isDark, setIsDark] = useState(() => {
@@ -101,10 +103,24 @@ export default function Dashboard() {
       setError(err.message);
     } finally {
       setTimeout(() => setLoading(false), 600);
+      setLastFetched(Date.now());
+      setTimeAgo('just now');
     }
   };
 
   useEffect(() => { fetchData(); }, []);
+
+  // Live-update the time-ago string every 30 seconds
+  useEffect(() => {
+    if (!lastFetched) return;
+    const interval = setInterval(() => {
+      const secs = Math.floor((Date.now() - lastFetched) / 1000);
+      if (secs < 60) setTimeAgo('just now');
+      else if (secs < 3600) setTimeAgo(`${Math.floor(secs / 60)} min ago`);
+      else setTimeAgo(`${Math.floor(secs / 3600)} hr ago`);
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [lastFetched]);
 
   const statCards = [
     { label: "TOTAL TASKS", value: data?.totalTasks || 0, color: "#7C5CFC", icon: LayoutList, trend: true, bg: "rgba(124, 92, 252, 0.1)" },
@@ -188,7 +204,7 @@ export default function Dashboard() {
           className={`px-4 py-2 rounded-full border ${isDark ? 'border-white/5 bg-slate-900/50 text-slate-400' : 'border-slate-200 bg-white text-slate-800'} text-xs font-semibold flex items-center gap-2 shadow-sm`}
         >
           <span className="text-[#00E5FF]">●</span>
-          Last updated: 1 min ago
+          Last updated: {timeAgo}
         </motion.div>
       </header>
 
