@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+// In production, REACT_APP_API_URL must be set to the backend's public Railway
+// domain at build time (e.g. https://team-task-manager-production.up.railway.app/api).
+// Falls back to relative /api for local development (proxied via package.json "proxy").
 const API = axios.create({
-  baseURL: process.env.NODE_ENV === 'production' ? '/api' : (process.env.REACT_APP_API_URL || '/api'),
+  baseURL: process.env.REACT_APP_API_URL || '/api',
 });
 
 API.interceptors.request.use((config) => {
