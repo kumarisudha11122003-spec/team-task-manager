@@ -264,7 +264,7 @@ export default function Layout() {
                 </button>
 
                 {showNotifications && (
-                  <div className={`absolute top-full right-0 mt-2 w-[280px] sm:w-[320px] rounded-2xl shadow-xl border ${isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-black/5'} z-50 overflow-hidden origin-top-right`}>
+                  <div className={`fixed top-[72px] left-4 right-4 sm:absolute sm:top-full sm:left-auto sm:right-0 sm:mt-2 sm:w-[320px] w-auto rounded-2xl shadow-xl border ${isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-black/5'} z-50 overflow-hidden sm:origin-top-right`}>
                     <div className="p-4 border-b border-inherit flex justify-between items-center">
                       <span className="font-bold text-sm">Notifications</span>
                       {unreadCount > 0 && (
@@ -308,7 +308,7 @@ export default function Layout() {
                 </button>
 
                 {showUserMenu && (
-                  <div className={`absolute top-full right-0 mt-2 w-48 rounded-2xl shadow-xl border ${isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-black/5'} z-50 overflow-hidden origin-top-right`}>
+                  <div className={`fixed top-[72px] left-4 right-4 sm:absolute sm:top-full sm:left-auto sm:right-0 sm:mt-2 sm:w-48 w-auto rounded-2xl shadow-xl border ${isDark ? 'bg-slate-900 border-white/5' : 'bg-white border-black/5'} z-50 overflow-hidden sm:origin-top-right`}>
                     <div className="p-3 border-b border-inherit">
                       <div className="font-bold text-sm truncate">{userName}</div>
                       <div className="text-xs text-slate-400 truncate">{userEmail}</div>
