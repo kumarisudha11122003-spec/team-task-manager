@@ -252,9 +252,9 @@ export default function Dashboard() {
             <CheckCircle2 className="w-8 h-8 text-purple-600" />
           </motion.div>
           {/* Bold white / light heading */}
-          <h2 className={`text-3xl font-extrabold mb-3 ${isDark ? 'text-white' : 'text-[#1a1a2e]'}`}>Member Workspace</h2>
+          <h2 className={`text-3xl font-extrabold mb-3 ${isDark ? 'text-white' : 'text-[#1a1a2e]'}`}>Team Workspace</h2>
           <p className={`max-w-md text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600 font-medium'}`}>
-            Access your personal tasks and collaborate with your team in a dedicated space.
+            Access all projects, manage tasks, and collaborate with your entire team in a unified space.
           </p>
         </motion.div>
 
