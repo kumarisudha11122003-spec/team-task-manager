@@ -11,8 +11,9 @@ export default function Layout() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const avatarRef = useRef(null);
 
-  const userName = 'jatin';
-  const userEmail = 'jatin@gmail.com';
+  const userName = user?.name === 'Admin User' ? 'admin' : (user?.name || 'admin');
+  const userEmail = user?.email || 'admin@example.com';
+  const userInitial = userName.charAt(0).toUpperCase();
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -209,7 +210,7 @@ export default function Layout() {
             <div className="flex items-center gap-3 p-2 rounded-xl">
               {/* Avatar orange circle with initial J */}
               <div className="w-10 h-10 rounded-full bg-[#FF8C00] flex items-center justify-center text-sm font-bold text-white shrink-0 relative font-['Inter'] shadow-md">
-                J
+                {userInitial}
                 <div className="absolute bottom-0 right-0 w-3 h-3 bg-[#00FFA3] border-2 border-white rounded-full" />
               </div>
               <div className="min-w-0 flex-1">
@@ -302,7 +303,7 @@ export default function Layout() {
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 className="w-9 h-9 rounded-full bg-[#FF8C00] flex items-center justify-center text-sm font-bold text-white shadow-sm font-['Inter'] relative"
               >
-                J
+                {userInitial}
               </button>
             </div>
           </header>
