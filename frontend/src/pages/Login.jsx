@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, ArrowRight, Activity, CheckCircle, FolderKanban, Sparkles } from 'lucide-react';
 
 export default function Login() {
@@ -9,6 +9,9 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [panel, setPanel] = useState('login'); // 'login' | 'forgot' | 'sent'
+  const [forgotEmail, setForgotEmail] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -24,6 +27,12 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleForgotPassword = (e) => {
+    e.preventDefault();
+    setForgotEmail(email);
+    setPanel('forgot');
   };
 
   const containerVariants = {
@@ -180,8 +189,11 @@ export default function Login() {
             <span className="text-[20px] font-bold tracking-tight text-white">TaskFlow</span>
           </div>
 
-          <h2 className="text-3xl font-bold mb-2">Welcome Back</h2>
-          <p className="text-slate-400 mb-8 text-sm">Sign in to manage your workspace.</p>
+          <AnimatePresence mode="wait">
+            {panel === 'login' && (
+              <motion.div key="login" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.2 }}>
+                <h2 className="text-3xl font-bold mb-2">Welcome Back</h2>
+                <p className="text-slate-400 mb-8 text-sm">Sign in to manage your workspace.</p>
 
           {error && (
             <motion.div 
@@ -213,9 +225,27 @@ export default function Login() {
             </div>
 
             <div className="space-y-1.5 group">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-2">
                 <label className="text-sm font-medium text-slate-300">Password</label>
-                <a href="#!" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">Forgot password?</a>
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  style={{
+                    position: 'relative',
+                    zIndex: 10,
+                    pointerEvents: 'all',
+                    cursor: 'pointer',
+                    background: 'none',
+                    border: 'none',
+                    color: '#a855f7',
+                    fontSize: '14px',
+                    transition: 'color 0.2s',
+                    textDecoration: 'none'
+                  }}
+                  className="hover:text-[#c084fc] hover:underline"
+                >
+                  Forgot password?
+                </button>
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-purple-400 transition-colors">
@@ -261,6 +291,77 @@ export default function Login() {
               Create a free account
             </Link>
           </div>
+        </motion.div>
+      )}
+
+      {panel === 'forgot' && (
+        <motion.div key="forgot" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+          <h2 className="text-3xl font-bold mb-2">Reset Password</h2>
+          <p className="text-slate-400 mb-8 text-sm">Enter your email and we'll send a reset link.</p>
+          
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            if (!forgotEmail) return;
+            setPanel('sent');
+          }} className="space-y-5">
+            <div className="space-y-1.5 group">
+              <label className="text-sm font-medium text-slate-300">Email Address</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-[#a855f7] transition-colors">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <input
+                  type="email"
+                  required
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3 bg-[#0F172A] border border-[var(--border-color)] rounded-xl outline-none text-[var(--text-primary)] placeholder-slate-500 focus:bg-[#0F172A] focus:border-[#a855f7]/50 focus:ring-4 focus:ring-[#a855f7]/20 transition-all duration-300"
+                  placeholder="you@example.com"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] text-[var(--text-primary)] font-medium shadow-[0_10px_40px_rgba(124,58,237,0.45)] hover:shadow-[0_10px_50px_rgba(124,58,237,0.6)] flex items-center justify-center gap-2 transition-all"
+            >
+              Send Reset Link <ArrowRight className="w-4 h-4" />
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <button 
+              type="button"
+              onClick={() => setPanel('login')}
+              className="text-[#a855f7] hover:text-[#c084fc] hover:underline transition-colors font-medium text-sm cursor-pointer bg-transparent border-none"
+            >
+              ← Back to Sign In
+            </button>
+          </div>
+        </motion.div>
+      )}
+
+      {panel === 'sent' && (
+        <motion.div key="sent" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.2 }} className="text-center py-6">
+          <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-8 h-8 text-green-400" />
+          </div>
+          <h2 className="text-2xl font-bold mb-3">Email Sent</h2>
+          <p className="text-slate-400 mb-8 text-sm leading-relaxed">
+            We've sent a password reset link to<br/>
+            <span className="text-white font-medium mt-2 block">{forgotEmail}</span>
+          </p>
+          
+          <button 
+            type="button"
+            onClick={() => setPanel('login')}
+            className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] text-[var(--text-primary)] font-medium shadow-[0_10px_40px_rgba(124,58,237,0.45)] hover:shadow-[0_10px_50px_rgba(124,58,237,0.6)] flex items-center justify-center gap-2 transition-all mt-4"
+          >
+            Back to Sign In
+          </button>
+        </motion.div>
+      )}
+      </AnimatePresence>
         </motion.div>
       </div>
     </div>

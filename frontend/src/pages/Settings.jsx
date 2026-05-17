@@ -44,8 +44,8 @@ export default function Settings() {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
 
   const getInitials = (n) => {
-    if (!n || n.trim() === '') return '?';
-    return n.trim().split(' ').map(w => w[0].toUpperCase()).slice(0, 2).join('');
+    if (!n || typeof n !== 'string' || n.trim() === '') return '?';
+    return n.trim().split(/\s+/).map(w => w[0] ? w[0].toUpperCase() : '').slice(0, 2).join('');
   };
 
   useEffect(() => {

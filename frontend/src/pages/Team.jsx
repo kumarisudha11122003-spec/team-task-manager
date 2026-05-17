@@ -112,13 +112,14 @@ export default function Team() {
 
   const getGradient = (name) => {
     const colors = ['#7C5CFC','#00E5FF','#00FFA3','#FF3D71','#FFB800'];
-    const idx = (name?.charCodeAt(0) || 0) % colors.length;
-    return `linear-gradient(135deg, ${colors[idx]}, ${colors[(idx+2)%5]})`;
+    const safeName = typeof name === 'string' ? name : '';
+    const idx = (safeName.charCodeAt(0) || 0) % colors.length;
+    return `linear-gradient(135deg, ${colors[idx] || colors[0]}, ${colors[(idx+2)%5] || colors[2]})`;
   };
 
   const getInitials = (n) => {
-    if (!n) return '?';
-    return n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    if (!n || typeof n !== 'string' || n.trim() === '') return '?';
+    return n.trim().split(/\s+/).map(w=>w[0] ? w[0].toUpperCase() : '').slice(0,2).join('');
   };
 
   // A user is "online" if their last_seen was within the last 2 minutes
