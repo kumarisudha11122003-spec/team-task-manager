@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const bcrypt = require('bcryptjs');
 const { pool } = require('./models/db');
 
 const authRoutes = require('./routes/auth');
@@ -104,6 +105,15 @@ async function initializeDB() {
         updated_at TIMESTAMPTZ DEFAULT NOW()
       );
     `);
+    
+    // Auto-seed admin user to guarantee it exists with the correct password
+    const hashed = await bcrypt.hash('password123', 12);
+    await client.query(`
+      INSERT INTO users (name, email, password, role)
+      VALUES ('Admin User', 'admin@example.com', $1, 'admin')
+      ON CONFLICT (email) DO UPDATE SET password = $1, role = 'admin'
+    `, [hashed]);
+
     console.log('Database initialized successfully');
   } finally {
     client.release();
