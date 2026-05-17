@@ -317,33 +317,30 @@ export default function Dashboard() {
                     <div className="flex items-center gap-3">
                       {/* Avatar + online dot */}
                       <div className="relative shrink-0">
-                        <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: getGradient(member.name) }}>
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: getGradient(member.name) }}>
                           {initials}
                         </div>
                         <div className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 ${isDark ? 'border-[#0d0d2b]' : 'border-[#e3e3f6]'} ${
-                          member.isOnline ? 'bg-[#00FFA3]' : 'bg-slate-400'
+                          member.isOnline ? 'bg-[#00FFA3] animate-pulse' : 'bg-slate-400'
                         }`} />
                       </div>
 
-                      {/* Name + role */}
+                      {/* Middle: Name + role + tasks */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 mb-1.5">
                           <span className={`font-bold text-[13px] truncate ${isDark ? 'text-white' : 'text-[#1a1a2e]'}`}>{member.name}</span>
                           <span className={`text-[9px] px-1.5 py-0.5 rounded font-['JetBrains_Mono'] font-bold tracking-widest shrink-0 ${
                             member.role === 'admin'
                               ? 'bg-[#7C5CFC]/20 text-[#A78BFF]'
                               : 'bg-[#00E5FF]/10 text-[#00E5FF]'
                           }`}>{member.role?.toUpperCase()}</span>
-                          <span className={`text-[10px] ml-auto shrink-0 font-['JetBrains_Mono'] ${member.isOnline ? 'text-[#00FFA3]' : isDark ? 'text-slate-600' : 'text-slate-400'}`}>
-                            {member.isOnline ? 'Online' : 'Offline'}
-                          </span>
                         </div>
 
                         {/* Task pills */}
-                        <div className="flex gap-2 mt-2 flex-wrap">
+                        <div className="flex gap-1.5 flex-wrap">
                           {member.inProgress.length > 0 && (
                             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#00E5FF]/15 text-[#00E5FF] font-['DM_Sans']">
-                              🔄 {member.inProgress.length} In Progress
+                              🔄 {member.inProgress.length} Working
                             </span>
                           )}
                           {member.todo.length > 0 && (
@@ -365,15 +362,18 @@ export default function Dashboard() {
 
                         {/* Active task name */}
                         {member.inProgress.length > 0 && (
-                          <p className={`text-[11px] mt-1.5 truncate font-['DM_Sans'] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                            ▸ Working on: <span className={`font-semibold ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>{member.inProgress[0].title}</span>
+                          <p className={`text-[11px] mt-1 truncate font-['DM_Sans'] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                            ▸ <span className={`font-semibold ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>{member.inProgress[0].title}</span>
                           </p>
                         )}
                       </div>
 
-                      {/* Completion % */}
-                      <div className="shrink-0 text-right">
-                        <span className={`text-[15px] font-extrabold font-['Syne'] ${
+                      {/* Right: Online status + completion % stacked */}
+                      <div className="shrink-0 flex flex-col items-end gap-1 min-w-[60px]">
+                        <span className={`text-[11px] font-bold font-['JetBrains_Mono'] ${member.isOnline ? 'text-[#00FFA3]' : isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                          {member.isOnline ? 'Online' : 'Offline'}
+                        </span>
+                        <span className={`text-[15px] font-extrabold font-['Syne'] leading-none ${
                           completion >= 75 ? 'text-[#00FFA3]' : completion >= 40 ? 'text-[#FFB800]' : isDark ? 'text-slate-400' : 'text-slate-500'
                         }`}>{completion}%</span>
                       </div>
