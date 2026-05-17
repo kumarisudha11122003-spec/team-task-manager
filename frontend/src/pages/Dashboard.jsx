@@ -72,6 +72,7 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
   const [lastFetched, setLastFetched] = useState(null);
   const [timeAgo, setTimeAgo] = useState('just now');
+  const [teamData, setTeamData] = useState([]);
   
   // Dynamically check if the page has light-theme or dark-theme active
   const [isDark, setIsDark] = useState(() => {
@@ -89,9 +90,14 @@ export default function Dashboard() {
 
   const fetchData = async () => {
     setLoading(true); setError(null);
+    const token = localStorage.getItem('token');
     try {
-      const res = await dashboardAPI.get();
-      const d = res.data;
+      const [dashRes, usersRes, tasksRes] = await Promise.all([
+        dashboardAPI.get(),
+        fetch('/api/users', { headers: { Authorization: `Bearer ${token}` } }),
+        fetch('/api/tasks', { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+      const d = dashRes.data;
       const stats = d.stats || {};
       setData({
         totalTasks: stats.total || 0,
@@ -99,6 +105,25 @@ export default function Dashboard() {
         completed: stats.completed || 0,
         overdue: stats.overdue || 0
       });
+
+      const usersArr = await usersRes.json();
+      const tasksArr = await tasksRes.json();
+      const users = Array.isArray(usersArr) ? usersArr : (usersArr.users || []);
+      const tasks = Array.isArray(tasksArr) ? tasksArr : (tasksArr.tasks || []);
+
+      const enriched = users.map(u => {
+        const ut = tasks.filter(t => t.assigned_to === u.id || t.assigned_to === u._id);
+        const isOnline = u.lastSeen && (Date.now() - new Date(u.lastSeen).getTime()) < 2 * 60 * 1000;
+        return {
+          ...u,
+          todo: ut.filter(t => t.status === 'todo'),
+          inProgress: ut.filter(t => t.status === 'in_progress' || t.status === 'in-progress'),
+          done: ut.filter(t => t.status === 'done'),
+          total: ut.length,
+          isOnline
+        };
+      });
+      setTeamData(enriched);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -256,22 +281,108 @@ export default function Dashboard() {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4 }}
-          className="lg:col-span-8 member-panel-gradient rounded-[24px] p-10 flex flex-col items-center justify-center text-center relative overflow-hidden border border-inherit shadow-md"
+          className="lg:col-span-8 member-panel-gradient rounded-[24px] p-6 border border-inherit shadow-md overflow-hidden"
         >
-          <div className="absolute inset-0 bg-purple-500/5 blur-[80px] pointer-events-none" />
-          {/* Centered purple checkmark circle icon */}
-          <motion.div 
-            animate={{ scale: [1, 1.04, 1] }}
-            transition={{ repeat: Infinity, duration: 4 }}
-            className="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center mb-5 border border-purple-500/30"
-          >
-            <CheckCircle2 className="w-8 h-8 text-purple-600" />
-          </motion.div>
-          {/* Bold white / light heading */}
-          <h2 className={`text-3xl font-extrabold mb-3 ${isDark ? 'text-white' : 'text-[#1a1a2e]'}`}>Team Workspace</h2>
-          <p className={`max-w-md text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600 font-medium'}`}>
-            Access all projects, manage tasks, and collaborate with your entire team in a unified space.
-          </p>
+          <div className="flex justify-between items-center mb-5">
+            <div>
+              <h2 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-[#1a1a2e]'}`}>Team Workspace</h2>
+              <p className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                {teamData.filter(u => u.isOnline).length} online · {teamData.length} members
+              </p>
+            </div>
+            <span className={`text-[10px] font-bold font-['JetBrains_Mono'] tracking-widest px-2.5 py-1 rounded-full ${
+              isDark ? 'bg-white/5 text-slate-400' : 'bg-black/5 text-slate-500'
+            }`}>LIVE</span>
+          </div>
+
+          {teamData.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-10 text-center">
+              <span className="text-3xl mb-2">🏝️</span>
+              <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>No team members yet</p>
+            </div>
+          ) : (
+            <div className="space-y-3 max-h-[320px] overflow-y-auto pr-1">
+              {teamData.map(member => {
+                const getGradient = (name) => {
+                  const colors = ['#7C5CFC','#00E5FF','#00FFA3','#FF3D71','#FFB800'];
+                  const idx = (name?.charCodeAt(0) || 0) % colors.length;
+                  return `linear-gradient(135deg, ${colors[idx]}, ${colors[(idx+2)%5]})`;
+                };
+                const initials = (member.name || '?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+                const completion = member.total > 0 ? Math.round((member.done.length / member.total) * 100) : 0;
+                return (
+                  <div key={member.id} className={`rounded-[14px] p-4 border transition-all ${
+                    isDark ? 'bg-white/5 border-white/5 hover:bg-white/8' : 'bg-white/60 border-white/60 hover:bg-white/80'
+                  } backdrop-blur-sm`}>
+                    <div className="flex items-center gap-3">
+                      {/* Avatar + online dot */}
+                      <div className="relative shrink-0">
+                        <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: getGradient(member.name) }}>
+                          {initials}
+                        </div>
+                        <div className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 ${isDark ? 'border-[#0d0d2b]' : 'border-[#e3e3f6]'} ${
+                          member.isOnline ? 'bg-[#00FFA3]' : 'bg-slate-400'
+                        }`} />
+                      </div>
+
+                      {/* Name + role */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className={`font-bold text-[13px] truncate ${isDark ? 'text-white' : 'text-[#1a1a2e]'}`}>{member.name}</span>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded font-['JetBrains_Mono'] font-bold tracking-widest shrink-0 ${
+                            member.role === 'admin'
+                              ? 'bg-[#7C5CFC]/20 text-[#A78BFF]'
+                              : 'bg-[#00E5FF]/10 text-[#00E5FF]'
+                          }`}>{member.role?.toUpperCase()}</span>
+                          <span className={`text-[10px] ml-auto shrink-0 font-['JetBrains_Mono'] ${member.isOnline ? 'text-[#00FFA3]' : isDark ? 'text-slate-600' : 'text-slate-400'}`}>
+                            {member.isOnline ? 'Online' : 'Offline'}
+                          </span>
+                        </div>
+
+                        {/* Task pills */}
+                        <div className="flex gap-2 mt-2 flex-wrap">
+                          {member.inProgress.length > 0 && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#00E5FF]/15 text-[#00E5FF] font-['DM_Sans']">
+                              🔄 {member.inProgress.length} In Progress
+                            </span>
+                          )}
+                          {member.todo.length > 0 && (
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full font-['DM_Sans'] ${
+                              isDark ? 'bg-white/10 text-slate-300' : 'bg-black/5 text-slate-600'
+                            }`}>
+                              📋 {member.todo.length} Pending
+                            </span>
+                          )}
+                          {member.done.length > 0 && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#00FFA3]/15 text-[#00FFA3] font-['DM_Sans']">
+                              ✅ {member.done.length} Done
+                            </span>
+                          )}
+                          {member.total === 0 && (
+                            <span className={`text-[10px] italic font-['DM_Sans'] ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>No tasks assigned</span>
+                          )}
+                        </div>
+
+                        {/* Active task name */}
+                        {member.inProgress.length > 0 && (
+                          <p className={`text-[11px] mt-1.5 truncate font-['DM_Sans'] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                            ▸ Working on: <span className={`font-semibold ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>{member.inProgress[0].title}</span>
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Completion % */}
+                      <div className="shrink-0 text-right">
+                        <span className={`text-[15px] font-extrabold font-['Syne'] ${
+                          completion >= 75 ? 'text-[#00FFA3]' : completion >= 40 ? 'text-[#FFB800]' : isDark ? 'text-slate-400' : 'text-slate-500'
+                        }`}>{completion}%</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </motion.div>
 
         {/* Right Panel (~35% width) */}
