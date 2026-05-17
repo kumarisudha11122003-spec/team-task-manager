@@ -25,8 +25,8 @@ export default function Team() {
     setLoading(true);
     try {
       const [usersRes, tasksRes] = await Promise.all([
-        fetch('http://localhost:5000/api/users', { headers: { 'Authorization': `Bearer ${token}` } }),
-        fetch('http://localhost:5000/api/tasks', { headers: { 'Authorization': `Bearer ${token}` } })
+        fetch('/api/users', { headers: { 'Authorization': `Bearer ${token}` } }),
+        fetch('/api/tasks', { headers: { 'Authorization': `Bearer ${token}` } })
       ]);
       
       if (usersRes.status === 401 || tasksRes.status === 401) {
@@ -77,7 +77,7 @@ export default function Team() {
     const token = localStorage.getItem('token');
     setInviting(true);
     try {
-      const res = await fetch('http://localhost:5000/api/users/invite', {
+      const res = await fetch('/api/users/invite', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: inviteEmail, role: inviteRole })
@@ -100,7 +100,7 @@ export default function Team() {
     if (!window.confirm(`Remove ${name} from team?`)) return;
     const token = localStorage.getItem('token');
     try {
-      await fetch(`http://localhost:5000/api/users/${id}`, {
+      await fetch(`/api/users/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -233,7 +233,7 @@ export default function Team() {
                           const token = localStorage.getItem('token');
                           const newRole = user.role === 'admin' ? 'member' : 'admin';
                           try {
-                            const res = await fetch(`http://localhost:5000/api/users/${user._id}/role`, {
+                            const res = await fetch(`/api/users/${user._id}/role`, {
                               method: 'PATCH',
                               headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                               body: JSON.stringify({ role: newRole })
