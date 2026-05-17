@@ -229,13 +229,28 @@ export default function Layout() {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col min-w-0 relative z-10 h-screen overflow-hidden">
           {/* Top Navbar */}
-          <header className="header-light h-[64px] shrink-0 flex items-center justify-between px-6 z-50">
-            {/* Breadcrumb Dashboard > Overview */}
-            <div className="flex items-center gap-2 text-sm font-medium">
-              <span className="text-slate-400">Dashboard</span>
-              <ChevronRight className="w-4 h-4 text-slate-300" />
-              <span className={isDark ? 'text-white font-semibold' : 'text-[#1a1a2e] font-semibold'}>Overview</span>
+          <header className="header-light h-[64px] shrink-0 flex items-center justify-between px-4 sm:px-6 z-50">
+            {/* Left: Logo (mobile) + Breadcrumb */}
+            <div className="flex items-center gap-3">
+              {/* TaskFlow logo — visible only on mobile (hidden on md+) */}
+              <div className="flex items-center gap-2 md:hidden">
+                <div className="logo-icon" style={{ width: 32, height: 32 }}>
+                  <div className="outer-square" style={{ width: 32, height: 32, borderRadius: 8 }}></div>
+                  <div className="inner-diamond" style={{ width: 13, height: 13 }}></div>
+                </div>
+                <span className={`font-['Inter'] font-bold text-[17px] tracking-tight ${isDark ? 'text-white' : 'text-[#1a1a2e]'}`}>TaskFlow</span>
+              </div>
+
+              {/* Breadcrumb — hidden on smallest screens to save space, visible sm+ */}
+              <div className="hidden sm:flex items-center gap-2 text-sm font-medium">
+                <span className="text-slate-400">Dashboard</span>
+                <ChevronRight className="w-4 h-4 text-slate-300" />
+                <span className={isDark ? 'text-white font-semibold' : 'text-[#1a1a2e] font-semibold'}>
+                  {navItems.find(n => location.pathname.startsWith(n.path))?.name || 'Overview'}
+                </span>
+              </div>
             </div>
+
             
             {/* Center Search Bar */}
             <div className="relative w-[320px] hidden lg:block group">
