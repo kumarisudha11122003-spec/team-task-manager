@@ -47,6 +47,42 @@ export default function Signup() {
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
       </div>
 
+      <style>{`
+        .logo-icon {
+          position: relative;
+          width: 48px;
+          height: 48px;
+        }
+        .outer-square {
+          animation: spinCW 4s linear infinite;
+          border-radius: 12px;
+          background: linear-gradient(135deg, #38bdf8, #3b82f6);
+          width: 48px;
+          height: 48px;
+          transform-origin: center center;
+        }
+        .inner-diamond {
+          width: 20px;
+          height: 20px;
+          background: white;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(45deg);
+          animation: spinCCW 4s linear infinite;
+          border-radius: 2px;
+          transform-origin: center center;
+        }
+        @keyframes spinCW {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
+        @keyframes spinCCW {
+          from { transform: translate(-50%, -50%) rotate(45deg); }
+          to   { transform: translate(-50%, -50%) rotate(-315deg); }
+        }
+      `}</style>
+
       {/* Left Side - Product Showcase */}
       <div className="hidden lg:flex flex-1 flex-col justify-center relative p-20 z-10">
         <motion.div 
@@ -55,11 +91,12 @@ export default function Signup() {
           variants={containerVariants}
           className="max-w-xl"
         >
-          <motion.div variants={itemVariants} className="flex items-center gap-3 mb-12">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#7C3AED] to-[#4F46E5] flex items-center justify-center shadow-[0_0_30px_rgba(124,58,237,0.4)]">
-              <Sparkles className="w-6 h-6 text-[var(--text-primary)]" />
+          <motion.div variants={itemVariants} className="flex items-center gap-[12px] mb-12">
+            <div className="logo-icon">
+              <div className="outer-square"></div>
+              <div className="inner-diamond"></div>
             </div>
-            <span className="text-2xl font-bold tracking-tight">TaskFlow</span>
+            <span className="text-[22px] font-bold tracking-tight text-white">TaskFlow</span>
           </motion.div>
 
           <motion.h1 variants={itemVariants} className="text-5xl font-bold leading-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] to-slate-400">
@@ -136,11 +173,12 @@ export default function Signup() {
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="w-full max-w-md p-8 sm:p-10 rounded-[24px] bg-[#0F172A]/60 backdrop-blur-2xl border border-[var(--border-color)] shadow-[0_20px_80px_rgba(0,0,0,0.55)]"
         >
-          <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7C3AED] to-[#4F46E5] flex items-center justify-center shadow-[0_0_20px_rgba(124,58,237,0.4)]">
-              <Sparkles className="w-5 h-5 text-[var(--text-primary)]" />
+          <div className="lg:hidden flex items-center gap-[12px] mb-8 justify-center">
+            <div className="logo-icon" style={{ width: '40px', height: '40px' }}>
+              <div className="outer-square" style={{ width: '40px', height: '40px', borderRadius: '10px' }}></div>
+              <div className="inner-diamond" style={{ width: '16px', height: '16px' }}></div>
             </div>
-            <span className="text-xl font-bold tracking-tight">TaskFlow</span>
+            <span className="text-[20px] font-bold tracking-tight text-white">TaskFlow</span>
           </div>
 
           <h2 className="text-3xl font-bold mb-2">Create Account</h2>
