@@ -318,7 +318,9 @@ export default function Settings() {
               <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[20px] p-8">
                 <h3 className="font-['Syne'] text-[18px] font-bold text-[var(--text-primary)] mb-6">Theme</h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <button 
+                  <motion.button 
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => {
                       setTheme('dark');
                       localStorage.setItem('theme', 'dark');
@@ -333,16 +335,34 @@ export default function Settings() {
                       document.body.style.background = '#0d0d1a';
                       window.dispatchEvent(new CustomEvent('taskflow-theme-change', { detail: 'dark' }));
                     }}
-                    className={`p-4 border-2 rounded-[16px] relative transition-all text-left ${theme === 'dark' ? 'border-[#7C5CFC] bg-[var(--bg-primary)] shadow-[0_0_20px_rgba(124,92,252,0.2)]' : 'border-[var(--border-color)] bg-[var(--bg-surface)] opacity-70 hover:opacity-100'}`}
+                    className={`p-4 rounded-[16px] relative transition-all text-left overflow-hidden border-2 ${theme === 'dark' ? 'border-transparent bg-[var(--bg-primary)] shadow-[0_10px_30px_rgba(124,92,252,0.15)]' : 'border-[var(--border-color)] bg-[var(--bg-surface)] opacity-70 hover:opacity-100 hover:border-[#7C5CFC]/50'}`}
                   >
-                    {theme === 'dark' && <div className="absolute top-3 right-3 w-4 h-4 bg-[#7C5CFC] rounded-full flex items-center justify-center"><div className="w-1.5 h-1.5 bg-white rounded-full"/></div>}
-                    <div className="h-20 bg-[#0d0d1a] border border-white/10 rounded-lg mb-3 flex flex-col gap-2 p-2">
+                    {theme === 'dark' && (
+                      <motion.div 
+                        layoutId="active-theme-border"
+                        className="absolute inset-0 border-2 border-[#7C5CFC] rounded-[16px] pointer-events-none z-10"
+                      />
+                    )}
+                    {theme === 'dark' && (
+                      <motion.div 
+                        layoutId="active-theme-dot"
+                        className="absolute top-3 right-3 w-5 h-5 bg-[#7C5CFC] rounded-full flex items-center justify-center z-10 shadow-[0_0_10px_rgba(124,92,252,0.5)]"
+                      >
+                        <div className="w-2 h-2 bg-white rounded-full"/>
+                      </motion.div>
+                    )}
+                    
+                    <div className="h-20 bg-[#0d0d1a] border border-white/10 rounded-lg mb-3 flex flex-col gap-2 p-3 relative z-0 shadow-inner">
                       <div className="w-full h-3 bg-slate-800 rounded-full" />
                       <div className="w-2/3 h-3 bg-slate-800 rounded-full" />
+                      <div className="w-1/3 h-2 bg-[#7C5CFC]/40 rounded-full mt-auto" />
                     </div>
-                    <div className="text-[var(--text-primary)] font-['DM_Sans'] text-[14px] font-bold text-center">Dark Theme</div>
-                  </button>
-                  <button 
+                    <div className="text-[var(--text-primary)] font-['DM_Sans'] text-[15px] font-bold text-center">Dark Theme</div>
+                  </motion.button>
+                  
+                  <motion.button 
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => {
                       setTheme('light');
                       localStorage.setItem('theme', 'light');
@@ -357,15 +377,30 @@ export default function Settings() {
                       document.body.style.background = '#f4f5f7';
                       window.dispatchEvent(new CustomEvent('taskflow-theme-change', { detail: 'light' }));
                     }}
-                    className={`p-4 border-2 rounded-[16px] relative transition-all text-left ${theme === 'light' ? 'border-[#7C5CFC] bg-[var(--bg-primary)] shadow-[0_0_20px_rgba(124,92,252,0.2)]' : 'border-[var(--border-color)] bg-[var(--bg-surface)] opacity-70 hover:opacity-100'}`}
+                    className={`p-4 rounded-[16px] relative transition-all text-left overflow-hidden border-2 ${theme === 'light' ? 'border-transparent bg-[var(--bg-primary)] shadow-[0_10px_30px_rgba(124,92,252,0.15)]' : 'border-[var(--border-color)] bg-[var(--bg-surface)] opacity-70 hover:opacity-100 hover:border-[#7C5CFC]/50'}`}
                   >
-                    {theme === 'light' && <div className="absolute top-3 right-3 w-4 h-4 bg-[#7C5CFC] rounded-full flex items-center justify-center"><div className="w-1.5 h-1.5 bg-white rounded-full"/></div>}
-                    <div className="h-20 bg-[#f4f5f7] border border-black/10 rounded-lg mb-3 flex flex-col gap-2 p-2">
+                    {theme === 'light' && (
+                      <motion.div 
+                        layoutId="active-theme-border"
+                        className="absolute inset-0 border-2 border-[#7C5CFC] rounded-[16px] pointer-events-none z-10"
+                      />
+                    )}
+                    {theme === 'light' && (
+                      <motion.div 
+                        layoutId="active-theme-dot"
+                        className="absolute top-3 right-3 w-5 h-5 bg-[#7C5CFC] rounded-full flex items-center justify-center z-10 shadow-[0_0_10px_rgba(124,92,252,0.5)]"
+                      >
+                        <div className="w-2 h-2 bg-white rounded-full"/>
+                      </motion.div>
+                    )}
+                    
+                    <div className="h-20 bg-[#f4f5f7] border border-black/10 rounded-lg mb-3 flex flex-col gap-2 p-3 relative z-0 shadow-inner">
                       <div className="w-full h-3 bg-slate-200 rounded-full" />
                       <div className="w-2/3 h-3 bg-slate-200 rounded-full" />
+                      <div className="w-1/3 h-2 bg-[#7C5CFC]/40 rounded-full mt-auto" />
                     </div>
-                    <div className="text-[var(--text-primary)] font-['DM_Sans'] text-[14px] font-bold text-center">Light Theme</div>
-                  </button>
+                    <div className="text-[var(--text-primary)] font-['DM_Sans'] text-[15px] font-bold text-center">Light Theme</div>
+                  </motion.button>
                 </div>
               </div>
             </div>
