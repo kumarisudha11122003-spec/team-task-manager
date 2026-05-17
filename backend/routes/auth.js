@@ -17,15 +17,16 @@ router.post('/signup', [
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   const { name, email, password } = req.body;
+  const normalizedEmail = email.trim().toLowerCase();
 
   try {
-    const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+    const existing = await pool.query('SELECT id FROM users WHERE email = $1', [normalizedEmail]);
     if (existing.rows.length > 0) return res.status(409).json({ error: 'Email already registered' });
 
     const hashed = await bcrypt.hash(password, 12);
     const result = await pool.query(
       'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, name, email, role, created_at',
-      [name, email, hashed]
+      [name, normalizedEmail, hashed]
     );
 
     const user = result.rows[0];
@@ -46,9 +47,10 @@ router.post('/login', [
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   const { email, password } = req.body;
+  const normalizedEmail = email.trim().toLowerCase();
 
   try {
-    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [normalizedEmail]);
     if (result.rows.length === 0) return res.status(401).json({ error: 'Invalid credentials' });
 
     const user = result.rows[0];
