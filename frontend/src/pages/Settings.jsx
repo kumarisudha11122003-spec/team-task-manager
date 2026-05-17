@@ -34,6 +34,9 @@ export default function Settings() {
     project: false
   });
 
+  // Appearance State
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
+
   const getInitials = (n) => {
     if (!n || n.trim() === '') return '?';
     return n.trim().split(' ').map(w => w[0].toUpperCase()).slice(0, 2).join('');
@@ -289,32 +292,39 @@ export default function Settings() {
             <div className="space-y-6">
               <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[20px] p-8">
                 <h3 className="font-['Syne'] text-[18px] font-bold text-[var(--text-primary)] mb-6">Theme</h3>
-                <div className="flex gap-4">
-                  <button className="w-[180px] p-4 border-2 border-[#7C5CFC] bg-[var(--bg-primary)] rounded-[16px] relative shadow-[0_0_20px_rgba(124,92,252,0.2)]">
-                    <div className="absolute top-3 right-3 w-4 h-4 bg-[#7C5CFC] rounded-full flex items-center justify-center"><div className="w-1.5 h-1.5 bg-white rounded-full"/></div>
-                    <div className="h-20 bg-[var(--bg-surface)] rounded-lg mb-3 flex flex-col gap-2 p-2">
-                      <div className="w-full h-3 bg-[var(--bg-surface)] rounded-full" />
-                      <div className="w-2/3 h-3 bg-[var(--bg-surface)] rounded-full" />
+                <div className="grid grid-cols-2 gap-4">
+                  <button 
+                    onClick={() => {
+                      setTheme('dark');
+                      localStorage.setItem('theme', 'dark');
+                      document.documentElement.classList.add('dark-theme');
+                      document.documentElement.classList.remove('light-theme');
+                    }}
+                    className={`p-4 border-2 rounded-[16px] relative transition-all text-left ${theme === 'dark' ? 'border-[#7C5CFC] bg-[var(--bg-primary)] shadow-[0_0_20px_rgba(124,92,252,0.2)]' : 'border-[var(--border-color)] bg-[var(--bg-surface)] opacity-70 hover:opacity-100'}`}
+                  >
+                    {theme === 'dark' && <div className="absolute top-3 right-3 w-4 h-4 bg-[#7C5CFC] rounded-full flex items-center justify-center"><div className="w-1.5 h-1.5 bg-white rounded-full"/></div>}
+                    <div className="h-20 bg-[#0d0d1a] border border-white/10 rounded-lg mb-3 flex flex-col gap-2 p-2">
+                      <div className="w-full h-3 bg-slate-800 rounded-full" />
+                      <div className="w-2/3 h-3 bg-slate-800 rounded-full" />
                     </div>
-                    <div className="text-[var(--text-primary)] font-['DM_Sans'] text-[14px] font-bold">Dark Theme</div>
+                    <div className="text-[var(--text-primary)] font-['DM_Sans'] text-[14px] font-bold text-center">Dark Theme</div>
                   </button>
-                  <button className="w-[180px] p-4 border-2 border-[var(--border-color)] bg-[#e0e0e0] rounded-[16px] opacity-40 cursor-not-allowed">
-                    <div className="h-20 bg-black/10 rounded-lg mb-3" />
-                    <div className="text-black font-['DM_Sans'] text-[14px] font-bold">Light Theme</div>
+                  <button 
+                    onClick={() => {
+                      setTheme('light');
+                      localStorage.setItem('theme', 'light');
+                      document.documentElement.classList.add('light-theme');
+                      document.documentElement.classList.remove('dark-theme');
+                    }}
+                    className={`p-4 border-2 rounded-[16px] relative transition-all text-left ${theme === 'light' ? 'border-[#7C5CFC] bg-[var(--bg-primary)] shadow-[0_0_20px_rgba(124,92,252,0.2)]' : 'border-[var(--border-color)] bg-[var(--bg-surface)] opacity-70 hover:opacity-100'}`}
+                  >
+                    {theme === 'light' && <div className="absolute top-3 right-3 w-4 h-4 bg-[#7C5CFC] rounded-full flex items-center justify-center"><div className="w-1.5 h-1.5 bg-white rounded-full"/></div>}
+                    <div className="h-20 bg-[#f4f5f7] border border-black/10 rounded-lg mb-3 flex flex-col gap-2 p-2">
+                      <div className="w-full h-3 bg-slate-200 rounded-full" />
+                      <div className="w-2/3 h-3 bg-slate-200 rounded-full" />
+                    </div>
+                    <div className="text-[var(--text-primary)] font-['DM_Sans'] text-[14px] font-bold text-center">Light Theme</div>
                   </button>
-                  <button className="w-[180px] p-4 border-2 border-[var(--border-color)] bg-gradient-to-br from-[#050508] to-white rounded-[16px] opacity-40 cursor-not-allowed">
-                    <div className="h-20 bg-[var(--bg-surface)] rounded-lg mb-3" />
-                    <div className="text-[var(--text-primary)] font-['DM_Sans'] text-[14px] font-bold drop-shadow-md">System</div>
-                  </button>
-                </div>
-              </div>
-
-              <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[20px] p-8">
-                <h3 className="font-['Syne'] text-[18px] font-bold text-[var(--text-primary)] mb-6">Accent Color</h3>
-                <div className="flex gap-4">
-                  {['#7C5CFC', '#00E5FF', '#00FFA3', '#FFB800', '#FF3D71', '#818CF8'].map(color => (
-                    <button key={color} className="w-8 h-8 rounded-full" style={{ background: color, border: color === '#7C5CFC' ? '3px solid white' : 'none', boxShadow: color === '#7C5CFC' ? `0 0 15px ${color}` : 'none' }} />
-                  ))}
                 </div>
               </div>
             </div>
