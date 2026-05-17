@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authAPI } from '../utils/api';
+import API from '../utils/api';
 
 const AuthContext = createContext(null);
 
@@ -36,6 +37,17 @@ export function AuthProvider({ children }) {
       setLoading(false);
     }
   }, []);
+
+  // Heartbeat: update last_seen every 60 seconds while logged in
+  useEffect(() => {
+    if (!user) return;
+    const sendHeartbeat = () => {
+      API.patch('/users/heartbeat').catch(() => {});
+    };
+    sendHeartbeat(); // fire immediately on login
+    const interval = setInterval(sendHeartbeat, 60000);
+    return () => clearInterval(interval);
+  }, [user]);
 
   const login = async (email, password) => {
     const res = await authAPI.login({ email, password });

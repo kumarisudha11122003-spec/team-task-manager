@@ -119,6 +119,12 @@ export default function Team() {
     return n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
   };
 
+  // A user is "online" if their last_seen was within the last 2 minutes
+  const isOnline = (lastSeen) => {
+    if (!lastSeen) return false;
+    return (Date.now() - new Date(lastSeen).getTime()) < 2 * 60 * 1000;
+  };
+
   if (loading) return (
     <div className="p-10 grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-5">
       {[...Array(6)].map((_, i) => (
@@ -137,7 +143,7 @@ export default function Team() {
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="font-['Syne'] text-[42px] font-[800] text-transparent bg-clip-text bg-gradient-to-r from-[#7C5CFC] to-[#00E5FF] mb-2 leading-none">Team</h1>
-          <p className="text-[var(--text-muted)] font-['DM_Sans'] text-[14px]">{users.length} members · {totalTasks} tasks assigned</p>
+          <p className="text-[var(--text-muted)] font-['DM_Sans'] text-[14px]">{users.length} members · {totalTasks} tasks assigned · <span className="text-[#00FFA3] font-semibold">{users.filter(u => isOnline(u.lastSeen)).length} online</span></p>
         </div>
         {isAdmin && (
           <button onClick={() => setShowInviteModal(true)} className="bg-gradient-to-br from-[#7C5CFC] to-[#00E5FF] px-6 py-3 rounded-[12px] font-['Syne'] text-[14px] font-bold text-[var(--text-primary)] shadow-[0_0_20px_rgba(124,92,252,0.3)] hover:scale-[1.03] transition-all flex items-center gap-2">
@@ -186,7 +192,8 @@ export default function Team() {
                 <div className="flex gap-4 mb-6 relative">
                   <div className="w-[56px] h-[56px] rounded-full flex items-center justify-center font-['Syne'] font-bold text-[18px] text-[var(--text-primary)] relative" style={{ background: getGradient(user.name) }}>
                     {getInitials(user.name)}
-                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-[#00FFA3] rounded-full border-2 border-[#12121A] shadow-[0_0_12px_#00FFA3] animate-pulse" />
+                    {/* Real-time online/offline indicator */}
+                    <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[var(--bg-surface)] shadow-md transition-all duration-500 ${isOnline(user.lastSeen) ? 'bg-[#00FFA3] shadow-[0_0_8px_#00FFA3] animate-pulse' : 'bg-slate-500'}`} title={isOnline(user.lastSeen) ? 'Online' : 'Offline'} />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-['Syne'] text-[16px] font-bold text-[var(--text-primary)] leading-tight mb-0.5">{user.name}</h3>

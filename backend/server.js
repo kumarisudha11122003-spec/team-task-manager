@@ -71,7 +71,8 @@ async function initializeDB() {
         email VARCHAR(150) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
         role VARCHAR(20) DEFAULT 'member' CHECK (role IN ('admin', 'member')),
-        created_at TIMESTAMPTZ DEFAULT NOW()
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        last_seen TIMESTAMPTZ
       );
 
       CREATE TABLE IF NOT EXISTS projects (
@@ -105,7 +106,12 @@ async function initializeDB() {
         updated_at TIMESTAMPTZ DEFAULT NOW()
       );
     `);
-    
+
+    // Migration: add last_seen column if it doesn't exist (for existing DBs)
+    await client.query(`
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS last_seen TIMESTAMPTZ;
+    `);
+
     // Auto-seed admin user to guarantee it exists with the correct password
     const hashed = await bcrypt.hash('password123', 12);
     await client.query(`
