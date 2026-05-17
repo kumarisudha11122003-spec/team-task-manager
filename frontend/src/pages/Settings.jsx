@@ -322,8 +322,16 @@ export default function Settings() {
                     onClick={() => {
                       setTheme('dark');
                       localStorage.setItem('theme', 'dark');
-                      document.documentElement.classList.add('dark-theme');
-                      document.documentElement.classList.remove('light-theme');
+                      const root = document.documentElement;
+                      root.classList.remove('light-theme');
+                      root.classList.add('dark-theme');
+                      root.style.setProperty('--bg-primary', '#0d0d1a');
+                      root.style.setProperty('--bg-surface', '#1a1a2e');
+                      root.style.setProperty('--text-primary', '#F0F0FF');
+                      root.style.setProperty('--text-muted', '#8585a8');
+                      root.style.setProperty('--border-color', 'rgba(255, 255, 255, 0.05)');
+                      document.body.style.background = '#0d0d1a';
+                      window.dispatchEvent(new CustomEvent('taskflow-theme-change', { detail: 'dark' }));
                     }}
                     className={`p-4 border-2 rounded-[16px] relative transition-all text-left ${theme === 'dark' ? 'border-[#7C5CFC] bg-[var(--bg-primary)] shadow-[0_0_20px_rgba(124,92,252,0.2)]' : 'border-[var(--border-color)] bg-[var(--bg-surface)] opacity-70 hover:opacity-100'}`}
                   >
@@ -338,8 +346,16 @@ export default function Settings() {
                     onClick={() => {
                       setTheme('light');
                       localStorage.setItem('theme', 'light');
-                      document.documentElement.classList.add('light-theme');
-                      document.documentElement.classList.remove('dark-theme');
+                      const root = document.documentElement;
+                      root.classList.remove('dark-theme');
+                      root.classList.add('light-theme');
+                      root.style.setProperty('--bg-primary', '#f4f5f7');
+                      root.style.setProperty('--bg-surface', '#ffffff');
+                      root.style.setProperty('--text-primary', '#1a1a2e');
+                      root.style.setProperty('--text-muted', '#6b6b8a');
+                      root.style.setProperty('--border-color', 'rgba(0, 0, 0, 0.08)');
+                      document.body.style.background = '#f4f5f7';
+                      window.dispatchEvent(new CustomEvent('taskflow-theme-change', { detail: 'light' }));
                     }}
                     className={`p-4 border-2 rounded-[16px] relative transition-all text-left ${theme === 'light' ? 'border-[#7C5CFC] bg-[var(--bg-primary)] shadow-[0_0_20px_rgba(124,92,252,0.2)]' : 'border-[var(--border-color)] bg-[var(--bg-surface)] opacity-70 hover:opacity-100'}`}
                   >

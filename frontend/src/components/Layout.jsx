@@ -49,6 +49,23 @@ export default function Layout() {
     }
   }, [isDark]);
 
+  // Sync with Settings page theme changes (storage event fires when another component changes localStorage)
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'theme') {
+        setIsDark(e.newValue === 'dark');
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    // Also listen to custom same-tab event dispatched by Settings
+    const handleThemeChange = (e) => setIsDark(e.detail === 'dark');
+    window.addEventListener('taskflow-theme-change', handleThemeChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('taskflow-theme-change', handleThemeChange);
+    };
+  }, []);
+
   useEffect(() => {
     const fetchNotifications = async () => {
       const token = localStorage.getItem('token');
