@@ -17,7 +17,7 @@ export function AppProvider({ children }) {
     setLoading(true);
     try {
       const headers = { Authorization: `Bearer ${token}` };
-      const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+      const baseUrl = process.env.NODE_ENV === 'production' ? '/api' : (process.env.REACT_APP_API_URL || 'http://localhost:5000/api');
       
       const [tasksRes, usersRes, projectsRes, meRes] = await Promise.all([
         fetch(`${baseUrl}/tasks`, { headers }),
