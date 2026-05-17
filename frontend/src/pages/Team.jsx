@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, UserPlus, MoreHorizontal, Users, X } from 'lucide-react';
+import { Search, UserPlus, MoreHorizontal, Users, X, Calendar, Clock, CheckCircle2 } from 'lucide-react';
 import { useRole } from '../hooks/useRole';
 
 export default function Team() {
@@ -16,6 +16,7 @@ export default function Team() {
   const [inviteRole, setInviteRole] = useState('member');
   const [inviting, setInviting] = useState(false);
   const [inviteError, setInviteError] = useState('');
+  const [selectedUserTasks, setSelectedUserTasks] = useState(null);
 
   const fetchTeamData = async () => {
     const token = localStorage.getItem('token');
@@ -48,7 +49,8 @@ export default function Team() {
           ...user,
           totalTasks: userTasks.length,
           completed, inProgress, overdue,
-          completionRate: userTasks.length > 0 ? Math.round((completed / userTasks.length) * 100) : 0
+          completionRate: userTasks.length > 0 ? Math.round((completed / userTasks.length) * 100) : 0,
+          tasks: userTasks
         };
       });
       
@@ -222,7 +224,7 @@ export default function Team() {
                 </div>
 
                 <div className="flex justify-between items-center pt-4 border-t border-[var(--border-color)]">
-                  <button className="border border-[var(--border-color)] text-[12px] font-['DM_Sans'] text-[var(--text-primary)] px-4 py-2 rounded-lg hover:bg-[var(--bg-surface)] hover:border-[var(--border-color)] transition-all">View Tasks →</button>
+                  <button onClick={() => setSelectedUserTasks(user)} className="border border-[var(--border-color)] text-[12px] font-['DM_Sans'] text-[var(--text-primary)] px-4 py-2 rounded-lg hover:bg-[var(--bg-surface)] hover:border-[var(--border-color)] transition-all">View Tasks →</button>
                   {isAdmin && user._id !== parseInt(userId) && user._id !== userId && (
                     <div className="relative group/menu cursor-pointer">
                       <button className="p-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"><MoreHorizontal className="w-5 h-5"/></button>
@@ -284,6 +286,101 @@ export default function Team() {
                     {inviting ? 'Sending...' : 'Send Invitation →'}
                   </button>
                 </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Member Tasks Overview Modal */}
+        {selectedUserTasks && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="w-full max-w-[850px] max-h-[85vh] bg-[var(--bg-primary)]/90 backdrop-blur-xl border border-[var(--border-color)] rounded-[24px] overflow-hidden flex flex-col">
+              <div className="h-1 w-full bg-gradient-to-r from-[#7C5CFC] to-[#00E5FF]" />
+              
+              {/* Header */}
+              <div className="p-6 border-b border-[var(--border-color)] flex justify-between items-center shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-['Syne'] font-bold text-[14px] text-[var(--text-primary)]" style={{ background: getGradient(selectedUserTasks.name) }}>
+                    {getInitials(selectedUserTasks.name)}
+                  </div>
+                  <div>
+                    <h2 className="font-['Syne'] text-[18px] font-bold text-[var(--text-primary)]">{selectedUserTasks.name}'s Tasks</h2>
+                    <p className="text-[var(--text-muted)] text-[12px] font-['DM_Sans']">{selectedUserTasks.email} · {selectedUserTasks.totalTasks} Tasks</p>
+                  </div>
+                </div>
+                <button onClick={() => setSelectedUserTasks(null)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1 rounded-lg hover:bg-[var(--bg-surface)] transition-all">
+                  <X className="w-5 h-5"/>
+                </button>
+              </div>
+
+              {/* Tasks List Content */}
+              <div className="p-6 overflow-y-auto flex-1 space-y-6">
+                {(!selectedUserTasks.tasks || selectedUserTasks.tasks.length === 0) ? (
+                  <div className="flex flex-col items-center justify-center py-12 text-[var(--text-muted)]">
+                    <span className="text-[32px] mb-2">🏝️</span>
+                    <p className="font-['DM_Sans'] text-sm">No tasks assigned to this team member.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-full align-start">
+                    {/* Columns */}
+                    {[
+                      { id: 'todo', label: 'Todo / Pending', color: '#7C5CFC', icon: Clock },
+                      { id: 'in_progress', label: 'In Progress', color: '#00E5FF', icon: Clock },
+                      { id: 'done', label: 'Done', color: '#00FFA3', icon: CheckCircle2 }
+                    ].map(col => {
+                      const colTasks = selectedUserTasks.tasks.filter(t => {
+                        if (col.id === 'in_progress') return t.status === 'in_progress' || t.status === 'in-progress';
+                        return t.status === col.id;
+                      });
+
+                      return (
+                        <div key={col.id} className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-xl p-4 flex flex-col min-h-[250px]">
+                          <div className="flex justify-between items-center mb-3">
+                            <span className="font-['JetBrains_Mono'] text-[10px] font-bold tracking-widest uppercase flex items-center gap-1.5" style={{ color: col.color }}>
+                              <col.icon className="w-3.5 h-3.5" />
+                              {col.label}
+                            </span>
+                            <span className="bg-[var(--bg-primary)] px-2 py-0.5 rounded font-['JetBrains_Mono'] text-[11px] text-[var(--text-muted)] border border-[var(--border-color)]">
+                              {colTasks.length}
+                            </span>
+                          </div>
+                          
+                          <div className="space-y-2 overflow-y-auto flex-1 max-h-[400px] pr-1">
+                            {colTasks.length === 0 ? (
+                              <div className="h-full flex items-center justify-center py-8 text-[11px] font-['DM_Sans'] text-[var(--text-muted)] italic">
+                                No tasks
+                              </div>
+                            ) : (
+                              colTasks.map(task => {
+                                const priorityColors = { high: '#FF3D71', medium: '#FFB800', low: '#00E5FF' };
+                                return (
+                                  <div key={task.id} className="bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg p-3" style={{ borderLeft: `3px solid ${priorityColors[task.priority] || '#ccc'}` }}>
+                                    <div className="flex justify-between items-center mb-1">
+                                      <span className="text-[8px] uppercase tracking-wider font-bold font-['JetBrains_Mono'] px-1.5 py-0.5 rounded" style={{ color: priorityColors[task.priority], backgroundColor: `${priorityColors[task.priority]}15` }}>
+                                        {task.priority}
+                                      </span>
+                                      <span className="text-[9px] text-[var(--text-muted)] truncate max-w-[80px]">
+                                        {task.project_name || 'No Project'}
+                                      </span>
+                                    </div>
+                                    <h4 className="font-['Syne'] font-bold text-[12px] text-[var(--text-primary)] leading-tight mb-1">{task.title}</h4>
+                                    {task.description && (
+                                      <p className="text-[10px] text-[var(--text-muted)] font-['DM_Sans'] line-clamp-2 mb-2">{task.description}</p>
+                                    )}
+                                    <div className="flex items-center gap-1 text-[9px] text-[var(--text-muted)] font-['JetBrains_Mono']">
+                                      <Calendar className="w-2.5 h-2.5" />
+                                      {task.due_date ? new Date(task.due_date).toLocaleDateString('en', {month:'short', day:'numeric'}) : 'No date'}
+                                    </div>
+                                  </div>
+                                );
+                              })
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </motion.div>
           </div>
