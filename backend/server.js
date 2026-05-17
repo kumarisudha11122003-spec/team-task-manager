@@ -12,6 +12,9 @@ const dashboardRoutes = require('./routes/dashboard');
 const app = express();
 
 app.use(cors({
+  // FRONTEND_URL must be set in Railway to the frontend's public domain
+  // (e.g. https://team-task-manager-frontend.up.railway.app).
+  // Falls back to '*' so the API remains reachable if the variable is not yet set.
   origin: process.env.FRONTEND_URL || '*',
   credentials: true
 }));
@@ -35,7 +38,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || 'Internal Server Error' });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 // Serve frontend in production
 const path = require('path');
