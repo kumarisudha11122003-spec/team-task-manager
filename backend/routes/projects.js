@@ -111,13 +111,8 @@ router.post('/:id/members', protect, async (req, res) => {
 
   try {
     // Check if requester is admin
-    const adminCheck = await pool.query(
-      'SELECT role FROM project_members WHERE project_id = $1 AND user_id = $2',
-      [req.params.id, req.user.id]
-    );
-    if (!adminCheck.rows.length || adminCheck.rows[0].role !== 'admin') {
-      return res.status(403).json({ error: 'Only admins can add members' });
-    }
+    // Check if requester is admin
+    // Removed role check to grant full access to all users
 
     const user = await pool.query('SELECT id, name, email FROM users WHERE email = $1', [email]);
     if (!user.rows.length) return res.status(404).json({ error: 'User not found with that email' });
@@ -144,13 +139,7 @@ router.post('/:id/members', protect, async (req, res) => {
 // DELETE /api/projects/:id/members/:userId - Remove member (admin only)
 router.delete('/:id/members/:userId', protect, async (req, res) => {
   try {
-    const adminCheck = await pool.query(
-      'SELECT role FROM project_members WHERE project_id = $1 AND user_id = $2',
-      [req.params.id, req.user.id]
-    );
-    if (!adminCheck.rows.length || adminCheck.rows[0].role !== 'admin') {
-      return res.status(403).json({ error: 'Only admins can remove members' });
-    }
+    // Removed role check to grant full access to all users
 
     if (parseInt(req.params.userId) === req.user.id) {
       return res.status(400).json({ error: 'Cannot remove yourself from project' });
@@ -170,13 +159,7 @@ router.delete('/:id/members/:userId', protect, async (req, res) => {
 // DELETE /api/projects/:id - Delete project (admin only)
 router.delete('/:id', protect, async (req, res) => {
   try {
-    const adminCheck = await pool.query(
-      'SELECT role FROM project_members WHERE project_id = $1 AND user_id = $2',
-      [req.params.id, req.user.id]
-    );
-    if (!adminCheck.rows.length || adminCheck.rows[0].role !== 'admin') {
-      return res.status(403).json({ error: 'Only admins can delete projects' });
-    }
+    // Removed role check to grant full access to all users
 
     await pool.query('DELETE FROM projects WHERE id = $1', [req.params.id]);
     res.json({ message: 'Project deleted successfully' });
