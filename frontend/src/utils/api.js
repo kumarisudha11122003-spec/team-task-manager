@@ -31,7 +31,16 @@ export const authAPI = {
   signup: (data) => API.post('/auth/signup', data),
   login: (data) => API.post('/auth/login', data),
   me: () => API.get('/auth/me'),
+  updateProfile: (data) => API.patch('/auth/me', data),
+  changePassword: (data) => API.post('/auth/change-password', data),
   deleteAccount: () => API.delete('/auth/me'),
+};
+
+export const usersAPI = {
+  getAll: () => API.get('/users'),
+  invite: (data) => API.post('/users/invite', data),
+  delete: (id) => API.delete(`/users/${id}`),
+  updateRole: (id, role) => API.patch(`/users/${id}/role`, { role }),
 };
 
 export const projectsAPI = {
@@ -44,6 +53,7 @@ export const projectsAPI = {
 };
 
 export const tasksAPI = {
+  getAll: () => API.get('/tasks'),
   getByProject: (projectId) => API.get(`/tasks?project_id=${projectId}`),
   create: (data) => API.post('/tasks', data),
   update: (id, data) => API.patch(`/tasks/${id}`, data),

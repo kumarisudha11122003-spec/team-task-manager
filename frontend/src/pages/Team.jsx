@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, UserPlus, MoreHorizontal, Users, X, Calendar, Clock, CheckCircle2 } from 'lucide-react';
 import { useRole } from '../hooks/useRole';
+import { usersAPI, tasksAPI } from '../utils/api';
 
 export default function Team() {
   const { isAdmin, userId } = useRole();
@@ -19,22 +20,15 @@ export default function Team() {
   const [selectedUserTasks, setSelectedUserTasks] = useState(null);
 
   const fetchTeamData = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) { window.location.href = '/login'; return; }
-    
     setLoading(true);
     try {
       const [usersRes, tasksRes] = await Promise.all([
-        fetch('/api/users', { headers: { 'Authorization': `Bearer ${token}` } }),
-        fetch('/api/tasks', { headers: { 'Authorization': `Bearer ${token}` } })
+        usersAPI.getAll(),
+        tasksAPI.getAll(),
       ]);
-      
-      if (usersRes.status === 401 || tasksRes.status === 401) {
-        window.location.href = '/login'; return;
-      }
-      
-      const usersData = await usersRes.json();
-      const tasksData = await tasksRes.json();
+
+      const usersData = usersRes.data;
+      const tasksData = tasksRes.data;
       
       const usersArray = Array.isArray(usersData) ? usersData : (usersData.users || usersData.data || []);
       const tasksArray = Array.isArray(tasksData) ? tasksData : (tasksData.tasks || tasksData.data || []);
@@ -74,23 +68,14 @@ export default function Team() {
       setInviteError('Enter a valid email address');
       return;
     }
-    const token = localStorage.getItem('token');
     setInviting(true);
     try {
-      const res = await fetch('/api/users/invite', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: inviteEmail, role: inviteRole })
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || 'Invite failed');
-      }
+      await usersAPI.invite({ email: inviteEmail, role: inviteRole });
       alert(`Invitation sent to ${inviteEmail}`);
       setInviteEmail(''); setShowInviteModal(false);
       fetchTeamData();
     } catch (err) {
-      setInviteError(err.message);
+      setInviteError(err.response?.data?.message || err.message || 'Invite failed');
     } finally {
       setInviting(false);
     }
@@ -98,12 +83,8 @@ export default function Team() {
 
   const handleDelete = async (id, name) => {
     if (!window.confirm(`Remove ${name} from team?`)) return;
-    const token = localStorage.getItem('token');
     try {
-      await fetch(`/api/users/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      await usersAPI.delete(id);
       setUsers(users.filter(u => u._id !== id));
     } catch (err) {
       alert('Failed to remove user');
@@ -230,20 +211,13 @@ export default function Team() {
                       <button className="p-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"><MoreHorizontal className="w-5 h-5"/></button>
                       <div className="absolute right-0 bottom-10 w-36 bg-[#1a1a2e]/90 backdrop-blur-xl border border-[var(--border-color)] rounded-[12px] p-1 opacity-0 pointer-events-none group-hover/menu:opacity-100 group-hover/menu:pointer-events-auto transition-all transform scale-95 group-hover/menu:scale-100 origin-bottom-right z-10">
                         <button onClick={async () => {
-                          const token = localStorage.getItem('token');
                           const newRole = user.role === 'admin' ? 'member' : 'admin';
                           try {
-                            const res = await fetch(`/api/users/${user._id}/role`, {
-                              method: 'PATCH',
-                              headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                              body: JSON.stringify({ role: newRole })
-                            });
-                            if (res.ok) {
-                              setUsers(users.map(u => u._id === user._id ? { ...u, role: newRole } : u));
-                            } else {
-                              alert('Failed to change role');
-                            }
-                          } catch (err) {}
+                            await usersAPI.updateRole(user._id, newRole);
+                            setUsers(users.map(u => u._id === user._id ? { ...u, role: newRole } : u));
+                          } catch (err) {
+                            alert('Failed to change role');
+                          }
                         }} className="w-full text-left px-3 py-2 text-[12px] text-[var(--text-primary)] hover:bg-[var(--bg-surface)] rounded-[8px]">{user.role === 'admin' ? 'Make Member' : 'Make Admin'}</button>
                         <button onClick={()=>handleDelete(user._id, user.name)} className="w-full text-left px-3 py-2 text-[12px] text-[#FF3D71] hover:bg-[#FF3D71]/10 rounded-[8px]">Remove Team</button>
                       </div>
