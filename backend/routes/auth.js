@@ -110,4 +110,27 @@ router.post('/change-password', protect, async (req, res) => {
   }
 });
 
+// DELETE /api/auth/me - Delete own account
+router.delete('/me', protect, async (req, res) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    // Remove from project_members
+    await client.query('DELETE FROM project_members WHERE user_id = $1', [req.user.id]);
+    // Unassign tasks
+    await client.query('UPDATE tasks SET assigned_to = NULL WHERE assigned_to = $1', [req.user.id]);
+    // Delete tasks created by user
+    await client.query('DELETE FROM tasks WHERE created_by = $1', [req.user.id]);
+    // Delete user
+    await client.query('DELETE FROM users WHERE id = $1', [req.user.id]);
+    await client.query('COMMIT');
+    res.json({ message: 'Account deleted successfully' });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    res.status(500).json({ error: err.message });
+  } finally {
+    client.release();
+  }
+});
+
 module.exports = router;

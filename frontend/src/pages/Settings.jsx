@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Shield, Bell, Palette, AlertTriangle, Eye, EyeOff } from 'lucide-react';
+import { authAPI } from '../utils/api';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const [deleting, setDeleting] = useState(false);
   
   // Profile State
   const [name, setName] = useState('');
@@ -132,6 +138,23 @@ export default function Settings() {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm(
+      'Are you sure you want to permanently delete your account? This action cannot be undone.'
+    );
+    if (!confirmed) return;
+    setDeleting(true);
+    try {
+      await authAPI.deleteAccount();
+      logout();
+      navigate('/login');
+    } catch (err) {
+      alert('Failed to delete account: ' + (err.response?.data?.error || err.message));
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   const getPasswordStrength = () => {
     if (!newPassword) return 0;
     let score = 0;
@@ -154,15 +177,15 @@ export default function Settings() {
         <p className="text-[var(--text-muted)] font-['DM_Sans'] text-[14px]">Manage your account and preferences</p>
       </div>
 
-      <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[14px] p-[6px] inline-flex gap-1 mb-8">
+      <div className="bg-[var(--bg-surface)] border border-[var(--border-color)] rounded-[14px] p-[6px] grid grid-cols-2 md:inline-flex gap-1 mb-8 w-full md:w-auto">
         {[
           { id: 'profile', icon: User, label: 'Profile' },
           { id: 'security', icon: Shield, label: 'Security' },
           { id: 'notifications', icon: Bell, label: 'Notifications' },
           { id: 'appearance', icon: Palette, label: 'Appearance' }
         ].map(tab => (
-          <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-2 px-5 py-2.5 rounded-[10px] text-[14px] font-['DM_Sans'] transition-all duration-200 ${activeTab === tab.id ? 'bg-gradient-to-br from-[#7C5CFC]/30 to-[#00E5FF]/15 border border-[#7C5CFC]/40 text-[var(--text-primary)] shadow-[0_0_20px_rgba(124,92,252,0.2)]' : 'text-[var(--text-muted)] hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]'}`}>
-            <tab.icon className="w-4 h-4" /> {tab.label}
+          <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-5 py-2.5 rounded-[10px] text-[13px] sm:text-[14px] font-['DM_Sans'] transition-all duration-200 ${activeTab === tab.id ? 'bg-gradient-to-br from-[#7C5CFC]/30 to-[#00E5FF]/15 border border-[#7C5CFC]/40 text-[var(--text-primary)] shadow-[0_0_20px_rgba(124,92,252,0.2)]' : 'text-[var(--text-muted)] hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)]'}`}>
+            <tab.icon className="w-4 h-4 shrink-0" /> <span className="truncate">{tab.label}</span>
           </button>
         ))}
       </div>
@@ -207,12 +230,14 @@ export default function Settings() {
                 </button>
               </div>
 
-              <div className="border border-[#FF3D71]/30 bg-[#FF3D71]/[0.04] rounded-[16px] p-6 flex justify-between items-center">
+              <div className="border border-[#FF3D71]/30 bg-[#FF3D71]/[0.04] rounded-[16px] p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                   <h3 className="text-[#FF3D71] font-bold text-[16px] mb-1">Delete Account</h3>
                   <p className="text-[var(--text-muted)] text-[13px]">Permanently remove your account and all of its contents. This cannot be undone.</p>
                 </div>
-                <button className="px-5 py-2.5 border border-[#FF3D71] text-[#FF3D71] rounded-lg font-bold text-[14px] hover:bg-[#FF3D71] hover:text-[var(--text-primary)] transition-colors">Delete Account</button>
+                <button onClick={handleDeleteAccount} disabled={deleting} className="shrink-0 px-5 py-2.5 border border-[#FF3D71] text-[#FF3D71] rounded-lg font-bold text-[14px] hover:bg-[#FF3D71] hover:text-white transition-colors disabled:opacity-50">
+                  {deleting ? 'Deleting...' : 'Delete Account'}
+                </button>
               </div>
             </div>
           )}
