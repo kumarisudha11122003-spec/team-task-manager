@@ -1,3 +1,7 @@
+# PASSWORDS 
+Admin login = admin@example.com
+password = password123
+
 # 🗂 TaskFlow — Team Task Manager
 
 A full-stack collaborative task management app built with React, Node.js/Express, and PostgreSQL.
