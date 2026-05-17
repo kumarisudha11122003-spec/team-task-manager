@@ -50,21 +50,10 @@ export default function Settings() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) { window.location.href = '/login'; return; }
-      
       try {
-        const res = await fetch('/api/auth/me', {
-          headers: { 
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        if (res.status === 401) { window.location.href = '/login'; return; }
-        
-        const data = await res.json();
-        const user = data.user || data;
-        
+        const res = await authAPI.me();
+        const user = res.data.user || res.data;
+
         setName(user.name || '');
         setEmail(user.email || '');
         setRole(user.role || 'member');
@@ -81,27 +70,15 @@ export default function Settings() {
   }, []);
 
   const handleSave = async () => {
-    const token = localStorage.getItem('token');
     setSaving(true);
     setSaveError('');
     try {
-      const res = await fetch('/api/auth/me', {  
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, email })
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || 'Update failed');
-      }
+      await authAPI.updateProfile({ name, email });
       setOriginalData({ name, email });
       alert('Profile updated successfully');
       window.dispatchEvent(new CustomEvent('userUpdated', { detail: { name, email } }));
     } catch (err) {
-      setSaveError(err.message);
+      setSaveError(err.response?.data?.message || err.message || 'Update failed');
     } finally {
       setSaving(false);
     }
@@ -116,25 +93,13 @@ export default function Settings() {
       setPasswordError('Password must be at least 8 characters');
       return;
     }
-    const token = localStorage.getItem('token');
     try {
-      const res = await fetch('/api/auth/change-password', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ currentPassword, newPassword })
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || 'Password change failed');
-      }
+      await authAPI.changePassword({ currentPassword, newPassword });
       setCurrentPassword(''); setNewPassword(''); setConfirmPassword('');
       alert('Password changed successfully');
       setPasswordError('');
     } catch (err) {
-      setPasswordError(err.message);
+      setPasswordError(err.response?.data?.message || err.message || 'Password change failed');
     }
   };
 
