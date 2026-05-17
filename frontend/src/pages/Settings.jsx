@@ -173,7 +173,7 @@ export default function Settings() {
   return (
     <div className="mx-auto max-w-[900px] p-10 pb-20">
       <div className="mb-8">
-        <h1 className="font-['Syne'] text-[42px] font-[800] text-transparent bg-clip-text bg-gradient-to-br from-[var(--text-primary)] via-[#A78BFF] to-[#00E5FF] mb-2 leading-none">Settings</h1>
+        <h1 className="font-['Syne'] text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#7C5CFC] to-[#00E5FF] mb-2 leading-tight">Settings</h1>
         <p className="text-[var(--text-muted)] font-['DM_Sans'] text-[14px]">Manage your account and preferences</p>
       </div>
 

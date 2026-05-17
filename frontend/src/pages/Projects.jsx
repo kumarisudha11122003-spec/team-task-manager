@@ -87,7 +87,7 @@ export default function Projects() {
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pb-10 max-w-5xl mx-auto">
         <div className="flex justify-between items-end mb-8">
           <div>
-            <h1 className={`text-4xl font-extrabold tracking-tight italic bg-gradient-to-r from-[#00E5FF] to-[#7C5CFC] bg-clip-text text-transparent mb-2`}>
+            <h1 className="font-['Syne'] text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#7C5CFC] to-[#00E5FF] mb-2 leading-tight">
               Projects
             </h1>
             <p className="text-[var(--text-muted)] font-['JetBrains_Mono'] text-sm">{projects.length} Active Workspaces</p>

@@ -65,7 +65,7 @@ export default function Tasks() {
     <div className="p-8 h-full flex flex-col">
       <div className="flex justify-between items-end mb-8 shrink-0">
         <div>
-          <h1 className="font-['Syne'] text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--text-primary)] to-[#A78BFF] mb-2">Tasks</h1>
+          <h1 className="font-['Syne'] text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#7C5CFC] to-[#00E5FF] mb-2 leading-tight">Tasks</h1>
           <p className="text-[var(--text-muted)] font-['DM_Sans'] text-sm">Manage and track all your team's work</p>
         </div>
         {isAdmin && (

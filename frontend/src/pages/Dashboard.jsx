@@ -194,7 +194,7 @@ export default function Dashboard() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl font-extrabold overview-title mb-1.5">Overview</h1>
+          <h1 className="font-['Syne'] text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#7C5CFC] to-[#00E5FF] mb-2 leading-tight">Overview</h1>
           <p className="text-slate-400 text-sm font-medium">Monitor your team's velocity and project health</p>
         </motion.div>
 
