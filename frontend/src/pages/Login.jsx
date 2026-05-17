@@ -107,7 +107,7 @@ export default function Login() {
             <span className="text-[22px] font-bold tracking-tight text-white">TaskFlow</span>
           </motion.div>
 
-          <motion.h1 variants={itemVariants} className="text-5xl font-bold leading-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] to-slate-400">
+          <motion.h1 variants={itemVariants} className="text-5xl font-bold leading-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
             Intelligent workspace for modern teams.
           </motion.h1>
           
