@@ -20,35 +20,19 @@ router.get('/', protect, async (req, res) => {
 
   try {
     if (!project_id) {
-      if (req.user.role === 'admin') {
-        const result = await pool.query(`
-          SELECT t.*,
-            u.name as assigned_to_name, u.email as assigned_to_email,
-            c.name as created_by_name,
-            p.name as project_name
-          FROM tasks t
-          LEFT JOIN users u ON u.id = t.assigned_to
-          LEFT JOIN users c ON c.id = t.created_by
-          LEFT JOIN projects p ON p.id = t.project_id
-          ORDER BY t.created_at DESC
-        `);
-        return res.json(result.rows);
-      } else {
-        const result = await pool.query(`
-          SELECT t.*,
-            u.name as assigned_to_name, u.email as assigned_to_email,
-            c.name as created_by_name,
-            p.name as project_name
-          FROM tasks t
-          JOIN project_members pm ON pm.project_id = t.project_id AND pm.user_id = $1
-          LEFT JOIN users u ON u.id = t.assigned_to
-          LEFT JOIN users c ON c.id = t.created_by
-          LEFT JOIN projects p ON p.id = t.project_id
-          WHERE t.assigned_to = $1
-          ORDER BY t.created_at DESC
-        `, [req.user.id]);
-        return res.json(result.rows);
-      }
+      // All authenticated users can see all tasks (needed for Team Workspace)
+      const result = await pool.query(`
+        SELECT t.*,
+          u.name as assigned_to_name, u.email as assigned_to_email,
+          c.name as created_by_name,
+          p.name as project_name
+        FROM tasks t
+        LEFT JOIN users u ON u.id = t.assigned_to
+        LEFT JOIN users c ON c.id = t.created_by
+        LEFT JOIN projects p ON p.id = t.project_id
+        ORDER BY t.created_at DESC
+      `);
+      return res.json(result.rows);
     }
 
     const membership = await getMembership(project_id, req.user.id);
@@ -87,17 +71,13 @@ router.post('/', protect, adminOnly, [
 
   const { title, description, due_date, priority, status, assigned_to, project_id } = req.body;
 
-  const membership = await getMembership(project_id, req.user.id);
-  if (!membership) return res.status(403).json({ error: 'Access denied' });
-  if (membership.role !== 'admin') return res.status(403).json({ error: 'Only admins can create tasks' });
-
   try {
     if (assigned_to) {
       const assigneeCheck = await pool.query(
-        'SELECT id FROM project_members WHERE project_id = $1 AND user_id = $2',
-        [project_id, assigned_to]
+        'SELECT id FROM users WHERE id = $1',
+        [assigned_to]
       );
-      if (!assigneeCheck.rows.length) return res.status(400).json({ error: 'Assignee is not a project member' });
+      if (!assigneeCheck.rows.length) return res.status(400).json({ error: 'Assignee not found' });
     }
 
     const result = await pool.query(`

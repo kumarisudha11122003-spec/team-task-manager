@@ -1,18 +1,22 @@
 export const useRole = () => {
   const userId = localStorage.getItem('userId');
+  const role = localStorage.getItem('role') || 'member';
   return {
-    isAdmin: true, // Force full access
-    isMember: false,
+    isAdmin: role === 'admin',
+    isMember: role === 'member',
     userId,
-    role: 'admin'
+    role
   };
 };
 
-export const getCurrentUser = () => ({
-  token: localStorage.getItem('token'),
-  role: 'admin',
-  userId: localStorage.getItem('userId'),
-  name: localStorage.getItem('userName'),
-  email: localStorage.getItem('userEmail'),
-  isAdmin: true
-});
+export const getCurrentUser = () => {
+  const role = localStorage.getItem('role') || 'member';
+  return {
+    token: localStorage.getItem('token'),
+    role,
+    userId: localStorage.getItem('userId'),
+    name: localStorage.getItem('userName'),
+    email: localStorage.getItem('userEmail'),
+    isAdmin: role === 'admin'
+  };
+};
