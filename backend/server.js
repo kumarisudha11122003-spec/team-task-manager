@@ -29,22 +29,26 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Team Task Manager API is running' });
 });
 
-// Error handler
+// Serve frontend build in production (must come AFTER all API routes)
+const path = require('path');
+const fs = require('fs');
+const frontendBuild = path.join(__dirname, '../frontend/build');
+if (fs.existsSync(frontendBuild)) {
+  app.use(express.static(frontendBuild));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendBuild, 'index.html'));
+  });
+}
+
+// Global error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: err.message || 'Internal Server Error' });
 });
 
+// Initialize DB then start server
 const PORT = process.env.PORT || 5000;
 
-// Serve frontend in production
-const path = require('path');
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-});
-
-// Initialize DB then start server
 async function startServer() {
   try {
     await initializeDB();

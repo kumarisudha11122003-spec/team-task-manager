@@ -4,6 +4,7 @@ buildCommand = "npm run build"
 
 [env]
 CI = "false"
+NODE_ENV = "production"
 
 [deploy]
 startCommand = "npm start"

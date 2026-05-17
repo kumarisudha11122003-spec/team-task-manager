@@ -54,7 +54,7 @@ export default function Settings() {
       if (!token) { window.location.href = '/login'; return; }
       
       try {
-        const res = await fetch('http://localhost:5000/api/auth/me', {
+        const res = await fetch('/api/auth/me', {
           headers: { 
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -85,7 +85,7 @@ export default function Settings() {
     setSaving(true);
     setSaveError('');
     try {
-      const res = await fetch('http://localhost:5000/api/auth/me', {  
+      const res = await fetch('/api/auth/me', {  
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
