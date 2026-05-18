@@ -34,10 +34,13 @@ const path = require('path');
 const fs = require('fs');
 const frontendBuild = path.join(__dirname, '../frontend/build');
 if (fs.existsSync(frontendBuild)) {
+  console.log(`✅ Frontend build folder found at: ${frontendBuild}`);
   app.use(express.static(frontendBuild));
   app.get('*', (req, res) => {
     res.sendFile(path.join(frontendBuild, 'index.html'));
   });
+} else {
+  console.warn(`⚠️  Frontend build folder NOT found at: ${frontendBuild}`);
 }
 
 // Global error handler
@@ -47,7 +50,7 @@ app.use((err, req, res, next) => {
 });
 
 // Initialize DB then start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 async function startServer() {
   try {
